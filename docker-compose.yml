@@ -35,7 +35,7 @@ services:
   misp-db:
     container_name: misp-db
     hostname: mysql
-    image: mysql/mysql-server:latest
+    image: mysql/mysql-server:5.7
     restart: always
     networks:
       - misp-network
