@@ -44,6 +44,6 @@ services:
     networks:
       - misp-network
     volumes:
-      - /data/tmp/mysql:/var/lib/mysql
+      - /data/mysql:/var/lib/mysql
     environment:
       - MYSQL_ROOT_PASSWORD=xxxxxxxx
