@@ -6,12 +6,12 @@ networks:
 
 services:
   misp-web:
-    build: .
+    build: misp-web
     depends_on:
       - misp-db
     container_name: misp-web
-    hostname: misp
-    image: misp:latest
+    hostname: misp-web
+    image: misp-web:latest
     restart: always
     networks:
       - misp-network
@@ -33,9 +33,13 @@ services:
       - TIMEZONE=Europe/Brussels
 
   misp-db:
+    build: 
+      context: misp-db
+      args:
+        MYSQL_MISP_PASSWORD: xxxxxxxx
     container_name: misp-db
-    hostname: mysql
-    image: mysql/mysql-server:5.7
+    hostname: misp-db
+    image: misp-db:latest
     restart: always
     networks:
       - misp-network
