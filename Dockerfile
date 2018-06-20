@@ -122,10 +122,10 @@ RUN echo "sudo -u www-data bash /var/www/MISP/app/Console/worker/start.sh" >>/et
 
 # Install templates & stuff
 WORKDIR /var/www/MISP/app/files
-RUN git clone https://github.com/MISP/misp-objects.git
-RUN git clone https://github.com/MISP/misp-galaxy.git
-RUN git clone https://github.com/MISP/misp-warninglists.git ./warninglists
-RUN git clone https://github.com/MISP/misp-taxonomies.git ./taxonomies
+RUN rm -rf misp-objects && git clone https://github.com/MISP/misp-objects.git
+RUN rm -rf misp-galaxy && git clone https://github.com/MISP/misp-galaxy.git
+RUN rm -rf warninglists && git clone https://github.com/MISP/misp-warninglists.git ./warninglists
+RUN rm -rf taxonomies && git clone https://github.com/MISP/misp-taxonomies.git ./taxonomies
 RUN chown -R www-data:www-data misp-objects misp-galaxy warninglists taxonomies
 
 # Install MISP Modules
