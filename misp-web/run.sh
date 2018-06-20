@@ -45,14 +45,6 @@ if [ -r /.firstboot.tmp ]; then
                 exit 1
         fi
 
-        # Set MYSQL_ROOT_PASSWORD
-        if [ -z "$MYSQL_ROOT_PASSWORD" ]; then
-                echo "MYSQL_ROOT_PASSWORD is not set, use default value 'root'"
-                MYSQL_ROOT_PASSWORD=root
-        else
-                echo "MYSQL_ROOT_PASSWORD is set to '$MYSQL_ROOT_PASSWORD'"
-        fi
-
         # Set MYSQL_MISP_PASSWORD
         if [ -z "$MYSQL_MISP_PASSWORD" ]; then
                 echo "MYSQL_MISP_PASSWORD is not set, use default value 'misp'"
@@ -61,7 +53,6 @@ if [ -r /.firstboot.tmp ]; then
                 echo "MYSQL_MISP_PASSWORD is set to '$MYSQL_MISP_PASSWORD'"
         fi
 
-	echo "DEBUG: mysql -u misp --password=$MYSQL_MISP_PASSWORD -h $MYSQL_HOST -P 3306 misp"
         ret=`echo 'SHOW TABLES;' | mysql -u misp --password="$MYSQL_MISP_PASSWORD" -h $MYSQL_HOST -P 3306 misp # 2>&1`
         if [ $? -eq 0 ]; then
                 echo "Connected to database successfully!"
