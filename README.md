@@ -19,7 +19,7 @@ The build is based on Ubuntu and will install all the required components. The f
 
 ## Fetch files
 ```
-# git clone https://github.com/xme/misp-docker
+# git clone https://github.com/MISP/misp-docker
 # cd misp-docker
 docker build -t misp .
 ```
