@@ -44,6 +44,15 @@ Edit the docker-compose.yml and change the following environment variables:
 ## Build the containers
 ```
 # docker-compose build
+or
+# docker-compose -f docker-compose-nginx.yml build
+```
+
+## Run containers
+```
+# docker-compose up
+or
+# docker-compose -f docker-compose-nginx.yml up
 ```
 
 
