@@ -15,6 +15,17 @@ The build is based on Ubuntu and will install all the required components. The f
 * Creation of the MySQL database
 * Generation of the admin PGP key
 
+
+# Optional NGINX config
+
+Included is an optional Docker Compose file 'docker-compose-nginx.yml' to spin up a reverse proxy to sit in front of MISP.
+
+## Config
+* add your "*.crt" and "*.key" files to the ./misp-proxy/ssl folder
+If not implementing SSL (not recommended) then simply comment out the appropriate lines in the "./misp-proxy/default.conf" file.
+* Update "server_name" in default.conf file (will implement ENVIRONMENT VARIABLE in the future)
+
+
 # Building your image
 
 ## Fetch files
@@ -36,11 +47,4 @@ Edit the docker-compose.yml and change the following environment variables:
 ```
 
 
-# Optional NGINX config
 
-Included is an optional Docker Compose file 'docker-compose-nginx.yml' to spin up a reverse proxy to sit in front of MISP.
-
-## Config
-* add your "*.crt" and "*.key" files to the ./misp-proxy/ssl folder
-If not implementing SSL (not recommended) then simply comment out the appropriate lines in the "./misp-proxy/default.conf" file.
-* Update "server_name" in default.conf file (will implement ENVIRONMENT VARIABLE in the future)
