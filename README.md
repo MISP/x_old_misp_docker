@@ -34,3 +34,13 @@ Edit the docker-compose.yml and change the following environment variables:
 ```
 # docker-compose build
 ```
+
+
+# Optional NGINX config
+
+Included is an optional Docker Compose file 'docker-compose-nginx.yml' to spin up a reverse proxy to sit in front of MISP.
+
+## Config
+* add your "*.crt" and "*.key" files to the ./misp-proxy/ssl folder
+If not implementing SSL (not recommended) then simply comment out the appropriate lines in the "./misp-proxy/default.conf" file.
+* Update "server_name" in default.conf file (will implement ENVIRONMENT VARIABLE in the future)
