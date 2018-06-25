@@ -1,0 +1,61 @@
+version: '2'
+
+services:
+  proxy:
+    build:
+      context: misp-proxy
+    container_name: misp-proxy
+    depends_on:
+      - misp-web
+    hostname: misp-proxy
+    image: misp-proxy:latest
+    networks:
+      - misp-network
+    ports:
+      - 81:80
+      - 4443:443
+
+  misp-web:
+    build: misp-web
+    depends_on:
+      - misp-db
+    container_name: misp-web
+    hostname: misp-web
+    image: misp-web:latest
+    restart: always
+    networks:
+      - misp-network
+    links:
+      - misp-db
+    volumes:
+      - /dev/urandom:/dev/random
+      - /data/misp:/var/www/MISP
+    environment:
+      - MYSQL_ROOT_PASSWORD=xxxxxxxx
+      - MYSQL_MISP_PASSWORD=xxxxxxxx
+      - MYSQL_HOST=misp-db
+      - MISP_ADMIN_EMAIL=admin@admin.test
+      - MISP_ADMIN_PASSPHRASE=xxxxxxxxx
+      - MISP_BASEURL=http:\/\/misp\.test
+      - POSTFIX_RELAY_HOST=relay.fqdn
+      - TIMEZONE=Europe/Brussels
+
+  misp-db:
+    build: 
+      context: misp-db
+      args:
+        MYSQL_MISP_PASSWORD: xxxxxxxx
+    container_name: misp-db
+    hostname: misp-db
+    image: misp-db:latest
+    restart: always
+    networks:
+      - misp-network
+    volumes:
+      - /data/mysql:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=xxxxxxxx
+
+networks:
+  misp-network:
+    driver: bridge
