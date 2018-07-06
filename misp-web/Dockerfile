@@ -163,8 +163,8 @@ RUN echo 'startsecs = 0' >> /etc/supervisor/conf.d/supervisord.conf
 RUN echo 'autorestart = false' >> /etc/supervisor/conf.d/supervisord.conf
 RUN echo '' >> /etc/supervisor/conf.d/supervisord.conf
 RUN echo '[program:misp-modules]' >> /etc/supervisor/conf.d/supervisord.conf
-RUN echo 'command=/bin/bash -c "cd /opt/misp-modules/bin && /usr/bin/python3 misp-modules.py"' >> /etc/supervisor/conf.d/supervisord.conf
-RUN echo 'user = root' >> /etc/supervisor/conf.d/supervisord.conf
+RUN echo 'command=/bin/bash -c "misp-modules -s -l 127.0.0.1"' >> /etc/supervisor/conf.d/supervisord.conf
+RUN echo 'user = www-data' >> /etc/supervisor/conf.d/supervisord.conf
 RUN echo 'startsecs = 0' >> /etc/supervisor/conf.d/supervisord.conf
 RUN echo 'autorestart = false' >> /etc/supervisor/conf.d/supervisord.conf
 
