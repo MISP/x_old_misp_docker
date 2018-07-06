@@ -137,7 +137,7 @@ RUN pip3 install --upgrade --ignore-installed urllib3
 RUN pip3 install --upgrade --ignore-installed requests
 RUN pip3 install -I -r REQUIREMENTS
 RUN pip3 install -I .
-RUN echo "sudo -u www-data misp-modules -s &" >>/etc/rc.local
+RUN echo "sudo -u www-data misp-modules -s -l 127.0.0.1 &" >>/etc/rc.local
 
 # Supervisord Setup
 RUN echo '[supervisord]' >> /etc/supervisor/conf.d/supervisord.conf
