@@ -3,7 +3,7 @@ MISP Docker
 
 The files in this repository are used to create a Docker container running a [MISP](http://www.misp-project.org) ("Malware Information Sharing Platform") instance.
 
-I rewrote the Docker file to split the components in multiple containers (which is more in the philosophy of Docker).
+I rewrote the Docker file to split the components in multiple containers (which is more in the philosophy of Docker). Therefore there is no longer a Dockerfile in the root directory.
 
 The MISP container needs at least a MySQL container to store the data. By default it listen to port 80. I highly recommend to serve it behind a NGinx or Apache reverse proxy.
 
@@ -30,9 +30,8 @@ If not implementing SSL (not recommended) then simply comment out the appropriat
 
 ## Fetch files
 ```
-# git clone https://github.com/MISP/misp-docker
-# cd misp-docker
-docker build -t misp .
+$ git clone https://github.com/MISP/misp-docker
+$ cd misp-docker
 ```
 ## Fix your environment
 Edit the docker-compose.yml and change the following environment variables:
@@ -46,17 +45,14 @@ Edit the docker-compose.yml and change the following environment variables:
 
 ## Build the containers
 ```
-# docker-compose build
+$ docker-compose build
 or
-# docker-compose -f docker-compose-nginx.yml build
+$ docker-compose -f docker-compose-nginx.yml build
 ```
 
 ## Run containers
 ```
-# docker-compose up
+$ docker-compose up
 or
-# docker-compose -f docker-compose-nginx.yml up
+$ docker-compose -f docker-compose-nginx.yml up
 ```
-
-
-
