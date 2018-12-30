@@ -1,49 +1,35 @@
 version: '2'
 
-networks:
-  misp-network:
-    driver: bridge
-
 services:
-  misp-web:
-    build: misp-web
-    depends_on:
-      - misp-db
-    container_name: misp-web
-    hostname: misp-web
-    image: misp-web:latest
-    restart: always
-    networks:
-      - misp-network
-    links:
-      - misp-db
+  web:
+    build: web
+    container_name: misp_web
+    image: misp:latest
+    restart: unless-stopped
     ports:
       - "80:80"
     volumes:
       - /dev/urandom:/dev/random
-      - /data/misp:/var/www/MISP
+      - /data/misp/web:/var/www/MISP
     environment:
-      - MYSQL_ROOT_PASSWORD=xxxxxxxx
-      - MYSQL_MISP_PASSWORD=xxxxxxxx
-      - MYSQL_HOST=misp-db
+      - MYSQL_HOST=db
+      - MYSQL_DATABASE=misp
+      - MYSQL_USER=misp
+      - MYSQL_PASSWORD=misp
       - MISP_ADMIN_EMAIL=admin@admin.test
-      - MISP_ADMIN_PASSPHRASE=xxxxxxxxx
+      - MISP_ADMIN_PASSPHRASE=admin
       - MISP_BASEURL=http:\/\/misp\.test
       - POSTFIX_RELAY_HOST=relay.fqdn
       - TIMEZONE=Europe/Brussels
 
-  misp-db:
-    build: 
-      context: misp-db
-      args:
-        MYSQL_MISP_PASSWORD: xxxxxxxx
-    container_name: misp-db
-    hostname: misp-db
-    image: misp-db:latest
-    restart: always
-    networks:
-      - misp-network
+  db:
+    container_name: misp_db
+    image: mysql/mysql-server:5.7
+    restart: unless-stopped
     volumes:
-      - /data/mysql:/var/lib/mysql
+      - /data/misp/db:/var/lib/mysql
     environment:
-      - MYSQL_ROOT_PASSWORD=xxxxxxxx
+      - MYSQL_DATABASE=misp
+      - MYSQL_USER=misp
+      - MYSQL_PASSWORD=misp
+      - MYSQL_ROOT_PASSWORD=misp
