@@ -49,6 +49,9 @@ RUN git clone https://github.com/MISP/MISP.git
 WORKDIR /var/www/MISP
 RUN git checkout tags/$(git describe --tags `git rev-list --tags --max-count=1`)
 RUN git config core.filemode false
+RUN git submodule update --init --recursive
+# Make git ignore filesystem permission differences for submodules
+RUN git submodule foreach --recursive git config core.filemode false
 
 WORKDIR /var/www/MISP/app/files/scripts
 RUN git clone https://github.com/CybOXProject/python-cybox.git
@@ -93,10 +96,6 @@ RUN echo "postfix postfix/mailname string localhost.localdomain" | debconf-set-s
 
 # Redis Setup
 RUN sed -i 's/^\(daemonize\s*\)yes\s*$/\1no/g' /etc/redis/redis.conf
-
-# Install PEAR packages
-RUN pear install Crypt_GPG >>/tmp/install.log
-RUN pear install Net_GeoIP >>/tmp/install.log
 
 # Apache Setup
 RUN cp /var/www/MISP/INSTALL/apache.misp.ubuntu /etc/apache2/sites-available/misp.conf
