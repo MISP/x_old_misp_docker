@@ -71,6 +71,12 @@ RUN git submodule init
 RUN git submodule update
 WORKDIR /var/www/MISP/app
 RUN php composer.phar config vendor-dir Vendor
+
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+RUN php -r "if (hash_file('sha384', 'composer-setup.php') === '48e3236262b34d30969dca3c37281b3b4bbe3221bda826ac6a9a62d6444cdb0dcd0615698a5cbe587c3f0fe57a54d8f5') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+RUN php composer-setup.php
+RUN php -r "unlink('composer-setup.php');"
+
 RUN php composer.phar install --ignore-platform-reqs
 USER root
 RUN phpenmod redis
@@ -133,8 +139,15 @@ WORKDIR /opt
 RUN apt-get install -y python3 python3-pip libjpeg-dev
 RUN git clone https://github.com/MISP/misp-modules.git
 WORKDIR /opt/misp-modules
+RUN pip3 install --upgrade pip
 RUN pip3 install --upgrade --ignore-installed urllib3
-RUN pip3 install --upgrade --ignore-installed requests
+RUN pip3 install --upgrade --ignore-installed requests 
+
+RUN sed -i 's/aiohttp.*/aiohttp/g' REQUIREMENTS
+RUN sed -i 's/functools.*//g' REQUIREMENTS
+RUN sed -i 's/async-timeout.*/async-timeout/g' REQUIREMENTS
+RUN sed -i 's/url-normalize.*/url-normalize/g' REQUIREMENTS
+RUN sed -i 's/yarl.*/yarl/g' REQUIREMENTS
 RUN pip3 install -I -r REQUIREMENTS
 RUN pip3 install -I .
 RUN echo "sudo -u www-data misp-modules -s -l 127.0.0.1 &" >>/etc/rc.local
@@ -167,7 +180,6 @@ RUN echo 'command=/bin/bash -c "misp-modules -s -l 127.0.0.1"' >> /etc/superviso
 RUN echo 'user = www-data' >> /etc/supervisor/conf.d/supervisord.conf
 RUN echo 'startsecs = 0' >> /etc/supervisor/conf.d/supervisord.conf
 RUN echo 'autorestart = false' >> /etc/supervisor/conf.d/supervisord.conf
-
 # Modify syslog configuration
 RUN sed -i -E 's/^(\s*)system\(\);/\1unix-stream("\/dev\/log");/' /etc/syslog-ng/syslog-ng.conf
 
