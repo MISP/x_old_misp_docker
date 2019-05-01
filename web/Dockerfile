@@ -147,7 +147,8 @@ RUN sed -i 's/aiohttp.*/aiohttp/g' REQUIREMENTS
 RUN sed -i 's/functools.*//g' REQUIREMENTS
 RUN sed -i 's/async-timeout.*/async-timeout/g' REQUIREMENTS
 RUN sed -i 's/url-normalize.*/url-normalize/g' REQUIREMENTS
-RUN sed -i 's/yarl.*/yarl/g' REQUIREMENTS
+RUN sed -i 's/^\(yarl\)\=.*/\1/g' REQUIREMENTS
+RUN sed -i 's/^\(sigmatools\)\=.*/\1/' REQUIREMENTS
 RUN pip3 install -I -r REQUIREMENTS
 RUN pip3 install -I .
 RUN echo "sudo -u www-data misp-modules -s -l 127.0.0.1 &" >>/etc/rc.local
