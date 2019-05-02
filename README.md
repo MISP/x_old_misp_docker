@@ -1,6 +1,8 @@
 MISP Docker
 ===========
 
+https://travis-ci.org/yaleman/misp-docker.svg?branch=master
+
 The files in this repository are used to create a Docker container running a [MISP](http://www.misp-project.org) ("Malware Information Sharing Platform") instance.
 
 I rewrote the Docker file to split the components in multiple containers (which is more in the philosophy of Docker). Therefore there is no longer a Dockerfile in the root directory.
