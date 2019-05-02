@@ -70,6 +70,14 @@ WORKDIR /var/www/MISP
 RUN git submodule init
 RUN git submodule update
 WORKDIR /var/www/MISP/app
+
+# FIX COMPOSER
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+RUN php -r "if (hash_file('sha384', 'composer-setup.php') === '48e3236262b34d30969dca3c37281b3b4bbe3221bda826ac6a9$
+RUN php composer-setup.php
+RUN php -r "unlink('composer-setup.php');"
+# END FIX
+
 RUN php composer.phar config vendor-dir Vendor
 RUN php composer.phar install --ignore-platform-reqs
 USER root
@@ -131,8 +139,14 @@ RUN chown -R www-data:www-data misp-objects misp-galaxy warninglists taxonomies
 # Install MISP Modules
 WORKDIR /opt
 RUN apt-get install -y python3 python3-pip libjpeg-dev
+# PIP3 fix
+RUN pip install --upgrade pip
+# END FIX
 RUN git clone https://github.com/MISP/misp-modules.git
 WORKDIR /opt/misp-modules
+# Requirements Fix
+RUN cat REQUIREMENTS | sed 's/aiohttp==3.4.4/aiohttp/g' > REQUIREMENTS
+# END FIX
 RUN pip3 install --upgrade --ignore-installed urllib3
 RUN pip3 install --upgrade --ignore-installed requests
 RUN pip3 install -I -r REQUIREMENTS
