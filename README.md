@@ -1,7 +1,7 @@
 MISP Docker
 ===========
 
-https://travis-ci.org/yaleman/misp-docker.svg?branch=master
+![](https://travis-ci.org/yaleman/misp-docker.svg?branch=master)
 
 The files in this repository are used to create a Docker container running a [MISP](http://www.misp-project.org) ("Malware Information Sharing Platform") instance.
 
@@ -17,16 +17,14 @@ The build is based on Ubuntu and will install all the required components. The f
 * Creation of the MySQL database
 * Generation of the admin PGP key
 
-
-# Optional NGINX config
-
-Included is an optional Docker Compose file 'docker-compose-nginx.yml' to spin up a reverse proxy to sit in front of MISP.
-
 ## Config
 * add your "*.crt" and "*.key" files to the ./misp-proxy/ssl folder
 If not implementing SSL (not recommended) then simply comment out the appropriate lines in the "./misp-proxy/default.conf" file.
 * Update "server_name" in default.conf file (will implement ENVIRONMENT VARIABLE in the future)
 
+# Optional NGINX config
+
+Included is an optional Docker Compose file 'docker-compose-nginx.yml' to spin up a reverse proxy to sit in front of MISP.
 
 # Building your image
 
