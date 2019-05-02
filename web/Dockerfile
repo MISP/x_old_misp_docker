@@ -134,6 +134,9 @@ RUN rm -rf warninglists && git clone https://github.com/MISP/misp-warninglists.g
 RUN rm -rf taxonomies && git clone https://github.com/MISP/misp-taxonomies.git ./taxonomies
 RUN chown -R www-data:www-data misp-objects misp-galaxy warninglists taxonomies
 
+# Install MISP build requirements
+RUN sudo apt-get -y install libpoppler58 libpoppler-dev libpoppler-cpp-dev
+
 # Install MISP Modules
 WORKDIR /opt
 RUN apt-get install -y python3 python3-pip libjpeg-dev
