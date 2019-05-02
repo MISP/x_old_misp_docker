@@ -70,6 +70,14 @@ WORKDIR /var/www/MISP
 RUN git submodule init
 RUN git submodule update
 WORKDIR /var/www/MISP/app
+
+# FIX COMPOSER
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+RUN php -r "if (hash_file('sha384', 'composer-setup.php') === '48e3236262b34d30969dca3c37281b3b4bbe3221bda826ac6a9$
+RUN php composer-setup.php
+RUN php -r "unlink('composer-setup.php');"
+# END FIX
+
 RUN php composer.phar config vendor-dir Vendor
 
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
@@ -140,9 +148,13 @@ RUN sudo apt-get -y install libpoppler58 libpoppler-dev libpoppler-cpp-dev
 # Install MISP Modules
 WORKDIR /opt
 RUN apt-get install -y python3 python3-pip libjpeg-dev
+# PIP3 fix
+RUN pip install --upgrade pip
+# END FIX
 RUN git clone https://github.com/MISP/misp-modules.git
 WORKDIR /opt/misp-modules
 RUN pip3 install --upgrade pip
+RUN cat REQUIREMENTS | sed 's/aiohttp==3.4.4/aiohttp/g' > REQUIREMENTS
 RUN pip3 install --upgrade --ignore-installed urllib3
 RUN pip3 install --upgrade --ignore-installed requests 
 
