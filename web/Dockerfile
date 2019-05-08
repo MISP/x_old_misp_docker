@@ -76,7 +76,7 @@ WORKDIR /var/www/MISP/app
 
 # FIX COMPOSER
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-RUN php -r "if (hash_file('sha384', 'composer-setup.php') === '48e3236262b34d30969dca3c37281b3b4bbe3221bda826ac6a9$
+RUN php -r "if (hash_file('sha384', 'composer-setup.php') === '48e3236262b34d30969dca3c37281b3b4bbe3221bda826ac6a9');"
 RUN php composer-setup.php
 RUN php -r "unlink('composer-setup.php');"
 # END FIX
