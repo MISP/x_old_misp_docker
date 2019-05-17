@@ -18,8 +18,8 @@ The build is based on Ubuntu and will install all the required components. The f
 * Generation of the admin PGP key
 
 ## Config
-* add your "*.crt" and "*.key" files to the ./misp-proxy/ssl folder
-If not implementing SSL (not recommended) then simply comment out the appropriate lines in the "./misp-proxy/default.conf" file.
+* add your "*.crt" and "*.key" files to the ./proxy/ssl folder
+If not implementing SSL (not recommended) then simply comment out the appropriate lines in the "./proxy/default.conf" file.
 * Update "server_name" in default.conf file (will implement ENVIRONMENT VARIABLE in the future)
 
 # Optional NGINX config
