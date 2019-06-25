@@ -29,7 +29,7 @@ RUN a2dismod status
 RUN a2dissite 000-default
 
 # PHP 7.2
-RUN apt-get install -y libapache2-mod-php php7.2 php7.2-cli php-crypt-gpg php7.2-dev php7.2-json php7.2-mysql php7.2-opcache php7.2-readline php7.2-redis php7.2-xml
+RUN apt-get install -y libapache2-mod-php php7.2 php7.2-cli php-crypt-gpg php7.2-dev php7.2-json php7.3-mysql php7.2-opcache php7.2-readline php7.2-redis php7.2-xml
 RUN apt-get install -y php-pear pkg-config libbson-1.0 libmongoc-1.0-0 php-xml php-dev
 
 # Fix php.ini with recommended settings
