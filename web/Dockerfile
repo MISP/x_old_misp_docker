@@ -138,7 +138,7 @@ RUN rm -rf taxonomies && git clone https://github.com/MISP/misp-taxonomies.git .
 RUN chown -R www-data:www-data misp-objects misp-galaxy warninglists taxonomies
 
 # Install MISP build requirements
-RUN sudo apt-get -y install libpoppler58 libpoppler-dev libpoppler-cpp-dev
+RUN sudo -E apt-get -y install libpoppler58 libpoppler-dev libpoppler-cpp-dev
 
 # Install MISP Modules
 WORKDIR /opt
