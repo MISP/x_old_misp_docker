@@ -10,26 +10,26 @@ services:
       - "80:80"
     volumes:
       - /dev/urandom:/dev/random
-      - /data/misp/web:/var/www/MISP
+      - ${DATA_DIR}/web:/var/www/MISP
     environment:
-      - MYSQL_HOST=db
-      - MYSQL_DATABASE=misp
-      - MYSQL_USER=misp
-      - MYSQL_PASSWORD=misp
-      - MISP_ADMIN_EMAIL=admin@admin.test
-      - MISP_ADMIN_PASSPHRASE=admin
-      - MISP_BASEURL=http:\/\/misp\.test
-      - POSTFIX_RELAY_HOST=relay.fqdn
-      - TIMEZONE=Europe/Brussels
+      - MYSQL_HOST=${MYSQL_HOST}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MISP_ADMIN_EMAIL=${MISP_ADMIN_EMAIL}
+      - MISP_ADMIN_PASSPHRASE=${MISP_ADMIN_PASSPHRASE}
+      - MISP_BASEURL=${MISP_BASEURL}
+      - POSTFIX_RELAY_HOST=${POSTFIX_RELAY_HOST}
+      - TIMEZONE=${TIMEZONE}
 
   db:
     container_name: misp_db
     image: mysql/mysql-server:5.7
     restart: unless-stopped
     volumes:
-      - /data/misp/db:/var/lib/mysql
+      - ${DATA_DIR}/db:/var/lib/mysql
     environment:
-      - MYSQL_DATABASE=misp
-      - MYSQL_USER=misp
-      - MYSQL_PASSWORD=misp
-      - MYSQL_ROOT_PASSWORD=misp
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}

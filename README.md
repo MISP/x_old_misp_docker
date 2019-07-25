@@ -34,14 +34,8 @@ $ git clone https://github.com/MISP/misp-docker
 $ cd misp-docker
 ```
 ## Fix your environment
-Edit the docker-compose.yml and change the following environment variables:
-* MYSQL_DATABASE
-* MYSQL_USER
-* MYSQL_PASSWORD
-* MYSQL_ROOT_PASSWORD
-* MYSQL_MISP_PASSWORD
-* MISP_ADMIN_PASSPHRASE
-* Changed the volumes to match your local filesystem
+Copy template.env to .env (on the root directory) and edit the environment variables at .env file
+
 
 ## Build the containers
 ```
