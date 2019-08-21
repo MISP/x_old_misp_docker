@@ -3,6 +3,8 @@ version: '2'
 services:
   web:
     build: web
+    depends_on:
+      - db
     container_name: misp_web
     image: misp:latest
     restart: unless-stopped
