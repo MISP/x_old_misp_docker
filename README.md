@@ -32,10 +32,10 @@ Included is an optional Docker Compose file 'docker-compose-nginx.yml' to spin u
 ```
 $ git clone https://github.com/MISP/misp-docker
 $ cd misp-docker
+# Copy template.env to .env (on the root directory) and edit the environment variables at .env file
+$ cp template.env .env
+$ vi .env
 ```
-## Fix your environment
-Copy template.env to .env (on the root directory) and edit the environment variables at .env file
-
 
 ## Build the containers
 ```
