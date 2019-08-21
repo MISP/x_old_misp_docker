@@ -77,7 +77,7 @@ RUN git submodule update
 WORKDIR /var/www/MISP/app
 
 # FIX COMPOSER
-RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+RUN curl --fail --location -o composer-setup.php https://getcomposer.org/installer
 RUN php -r "if (hash_file('sha384', 'composer-setup.php') === 'a5c698ffe4b8e849a443b120cd5ba38043260d5c4023dbf93e1558871f1f07f58274fc6f4c93bcfd858c6bd0775cd8d1') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
 RUN php composer-setup.php
 RUN php -r "unlink('composer-setup.php');"
@@ -138,7 +138,7 @@ RUN rm -rf taxonomies && git clone https://github.com/MISP/misp-taxonomies.git .
 RUN chown -R www-data:www-data misp-objects misp-galaxy warninglists taxonomies
 
 # Install MISP build requirements
-RUN sudo apt-get -y install libpoppler58 libpoppler-dev libpoppler-cpp-dev
+RUN sudo -E apt-get -y install libpoppler58 libpoppler-dev libpoppler-cpp-dev
 
 # Install MISP Modules
 WORKDIR /opt
