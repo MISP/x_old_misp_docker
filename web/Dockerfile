@@ -12,39 +12,50 @@
 FROM ubuntu:xenial
 MAINTAINER Xavier Mertens <xavier@rootshell.be>
 
-# Install core components
-ENV DEBIAN_FRONTEND noninteractive
-RUN apt-get update && apt-get dist-upgrade -y && apt-get autoremove -y && apt-get clean
-RUN apt-get install -y software-properties-common
-RUN apt-get install -y postfix
-RUN apt-get install -y mysql-client curl gcc git gnupg-agent make python openssl redis-server sudo vim zip locales
-
-RUN locale-gen en_US.UTF-8
 ENV LANG en_US.UTF-8
-RUN add-apt-repository -y ppa:ondrej/php && apt-get update
+ENV DEBIAN_FRONTEND noninteractive
 
-# Apache
-RUN apt-get install -y apache2 apache2-doc apache2-utils
-RUN a2dismod status
-RUN a2dissite 000-default
+# Update packages and install additional components
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends locales software-properties-common \
+    && locale-gen en_US.UTF-8
 
-# PHP 7.2
-RUN apt-get install -y libapache2-mod-php php7.2 php7.2-cli php-crypt-gpg php7.2-dev php7.2-json php7.2-mysql php7.2-opcache php7.2-readline php7.2-redis php7.2-xml
-RUN apt-get install -y php-pear pkg-config libbson-1.0 libmongoc-1.0-0 php-xml php-dev php-gd
-# install MySQL PDO extension
-RUN apt-get install -y php-mysql
+RUN add-apt-repository -y ppa:ondrej/php \
+    && apt-get update \
+    && apt-get dist-upgrade -y \
+    && apt-get autoremove -y \
+    && apt-get clean
 
-# Fix php.ini with recommended settings
-RUN sed -i \
-    -e "s/max_execution_time = 30/max_execution_time = 300/" \
-    -e "s/memory_limit = 128M/memory_limit = 2048M/" \
-    -e "s/upload_max_filesize = 2M/upload_max_filesize = 50M/" \
-    -e "s/post_max_size = 8M/post_max_size = 50M/" \
-    /etc/php/7.2/apache2/php.ini
+# Preconfigure setting for packages
+RUN echo "postfix postfix/main_mailer_type string Local only" | debconf-set-selections
+RUN echo "postfix postfix/mailname string localhost.localdomain" | debconf-set-selections
 
-RUN apt-get install -y python-dev python-pip libxml2-dev libxslt1-dev zlib1g-dev python-setuptools libfuzzy-dev python-lxml python3-lxml
-RUN apt-get install -y cron logrotate supervisor syslog-ng-core
-RUN apt-get clean
+RUN apt-get install -y \
+        # Core components \
+        postfix mysql-client curl gcc git gnupg-agent make python openssl redis-server sudo vim zip software-properties-common \
+        # Apache \
+        apache2 apache2-doc apache2-utils \
+        # Python \
+        python-dev python-pip libxml2-dev libxslt1-dev zlib1g-dev python-setuptools libfuzzy-dev \
+        python3 python3-pip libjpeg-dev python-lxml python3-lxml \
+        # Misc tools \
+        cron logrotate supervisor syslog-ng-core \
+        # MISP build requirements \
+        libpoppler58 libpoppler-dev libpoppler-cpp-dev \
+        # PHP 7.2 \
+        libapache2-mod-php php7.2 php7.2-cli php-crypt-gpg \
+        php7.2-dev php7.2-json php7.2-mysql php7.2-opcache php7.2-readline php7.2-redis php7.2-xml \
+        php-pear pkg-config libbson-1.0 libmongoc-1.0-0 php-xml php-dev php-gd \
+        # install MySQL PDO extension \
+        php-mysql \
+    && apt-get clean \
+    # Fix php.ini with recommended settings \
+    && sed -i \
+        -e "s/max_execution_time = 30/max_execution_time = 300/" \
+        -e "s/memory_limit = 128M/memory_limit = 2048M/" \
+        -e "s/upload_max_filesize = 2M/upload_max_filesize = 50M/" \
+        -e "s/post_max_size = 8M/post_max_size = 50M/" \
+        /etc/php/7.2/apache2/php.ini
 
 # update setuptools because otherwise you'' get python errors
 RUN pip install --upgrade setuptools
@@ -103,10 +114,6 @@ RUN chmod +x /var/www/MISP/app/Console/cake
 
 RUN cp /var/www/MISP/INSTALL/misp.logrotate /etc/logrotate.d/misp
 
-# Preconfigure setting for packages
-RUN echo "postfix postfix/main_mailer_type string Local only" | debconf-set-selections
-RUN echo "postfix postfix/mailname string localhost.localdomain" | debconf-set-selections
-
 # Redis Setup
 RUN sed -i 's/^\(daemonize\s*\)yes\s*$/\1no/g' /etc/redis/redis.conf
 
@@ -140,12 +147,8 @@ RUN cd /var/www/MISP/app/files \
     && rm -rf taxonomies && git clone https://github.com/MISP/misp-taxonomies.git ./taxonomies \
     && chown -R www-data:www-data misp-objects misp-galaxy warninglists taxonomies
 
-# Install MISP build requirements
-RUN sudo -E apt-get -y install libpoppler58 libpoppler-dev libpoppler-cpp-dev
-
 # Install MISP Modules
 WORKDIR /opt
-RUN apt-get install -y python3 python3-pip libjpeg-dev
 # PIP3 fix
 RUN pip install --upgrade pip
 # END FIX
