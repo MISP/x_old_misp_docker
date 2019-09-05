@@ -35,10 +35,12 @@ RUN apt-get install -y php-pear pkg-config libbson-1.0 libmongoc-1.0-0 php-xml p
 RUN apt-get install -y php-mysql
 
 # Fix php.ini with recommended settings
-RUN sed -i "s/max_execution_time = 30/max_execution_time = 300/" /etc/php/7.2/apache2/php.ini
-RUN sed -i "s/memory_limit = 128M/memory_limit = 2048M/" /etc/php/7.2/apache2/php.ini
-RUN sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 50M/" /etc/php/7.2/apache2/php.ini
-RUN sed -i "s/post_max_size = 8M/post_max_size = 50M/" /etc/php/7.2/apache2/php.ini
+RUN sed -i \
+    -e "s/max_execution_time = 30/max_execution_time = 300/" \
+    -e "s/memory_limit = 128M/memory_limit = 2048M/" \
+    -e "s/upload_max_filesize = 2M/upload_max_filesize = 50M/" \
+    -e "s/post_max_size = 8M/post_max_size = 50M/" \
+    /etc/php/7.2/apache2/php.ini
 
 RUN apt-get install -y python-dev python-pip libxml2-dev libxslt1-dev zlib1g-dev python-setuptools libfuzzy-dev python-lxml python3-lxml
 RUN apt-get install -y cron logrotate supervisor syslog-ng-core
@@ -154,48 +156,49 @@ RUN pip install --upgrade pip
 RUN git clone https://github.com/MISP/misp-modules.git
 WORKDIR /opt/misp-modules
 RUN pip3 install --upgrade pip
-RUN cat REQUIREMENTS | sed 's/aiohttp==3.4.4/aiohttp/g' > REQUIREMENTS
+RUN sed -i \
+        -e 's/aiohttp.*/aiohttp/g' \
+        -e 's/functools.*//g' \
+        -e 's/async-timeout.*/async-timeout/g' \
+        -e 's/url-normalize.*/url-normalize/g' \
+        -e 's/^\(yarl\)\=.*/\1/g' \
+        -e 's/^\(sigmatools\)\=.*/\1/' \
+        REQUIREMENTS
 RUN pip3 install --upgrade --ignore-installed urllib3
 RUN pip3 install --upgrade --ignore-installed requests 
-
-RUN sed -i 's/aiohttp.*/aiohttp/g' REQUIREMENTS
-RUN sed -i 's/functools.*//g' REQUIREMENTS
-RUN sed -i 's/async-timeout.*/async-timeout/g' REQUIREMENTS
-RUN sed -i 's/url-normalize.*/url-normalize/g' REQUIREMENTS
-RUN sed -i 's/^\(yarl\)\=.*/\1/g' REQUIREMENTS
-RUN sed -i 's/^\(sigmatools\)\=.*/\1/' REQUIREMENTS
 RUN pip3 install -I -r REQUIREMENTS
 RUN pip3 install -I .
 RUN echo "sudo -u www-data misp-modules -s -l 127.0.0.1 &" >>/etc/rc.local
 
 # Supervisord Setup
-RUN echo '[supervisord]' >> /etc/supervisor/conf.d/supervisord.conf
-RUN echo 'nodaemon = true' >> /etc/supervisor/conf.d/supervisord.conf
-RUN echo '' >> /etc/supervisor/conf.d/supervisord.conf
-RUN echo '[program:postfix]' >> /etc/supervisor/conf.d/supervisord.conf
-RUN echo 'process_name = master' >> /etc/supervisor/conf.d/supervisord.conf
-RUN echo 'directory = /etc/postfix' >> /etc/supervisor/conf.d/supervisord.conf
-RUN echo 'command = /usr/sbin/postfix -c /etc/postfix start' >> /etc/supervisor/conf.d/supervisord.conf
-RUN echo 'startsecs = 0' >> /etc/supervisor/conf.d/supervisord.conf
-RUN echo 'autorestart = false' >> /etc/supervisor/conf.d/supervisord.conf
-RUN echo '' >> /etc/supervisor/conf.d/supervisord.conf
-RUN echo '[program:redis-server]' >> /etc/supervisor/conf.d/supervisord.conf
-RUN echo 'command=redis-server /etc/redis/redis.conf' >> /etc/supervisor/conf.d/supervisord.conf
-RUN echo '' >> /etc/supervisor/conf.d/supervisord.conf
-RUN echo '[program:apache2]' >> /etc/supervisor/conf.d/supervisord.conf
-RUN echo 'command=/bin/bash -c "source /etc/apache2/envvars && exec /usr/sbin/apache2 -D FOREGROUND"' >> /etc/supervisor/conf.d/supervisord.conf
-RUN echo '' >> /etc/supervisor/conf.d/supervisord.conf
-RUN echo '[program:resque]' >> /etc/supervisor/conf.d/supervisord.conf
-RUN echo 'command=/bin/bash /var/www/MISP/app/Console/worker/start.sh' >> /etc/supervisor/conf.d/supervisord.conf
-RUN echo 'user = www-data' >> /etc/supervisor/conf.d/supervisord.conf
-RUN echo 'startsecs = 0' >> /etc/supervisor/conf.d/supervisord.conf
-RUN echo 'autorestart = false' >> /etc/supervisor/conf.d/supervisord.conf
-RUN echo '' >> /etc/supervisor/conf.d/supervisord.conf
-RUN echo '[program:misp-modules]' >> /etc/supervisor/conf.d/supervisord.conf
-RUN echo 'command=/bin/bash -c "misp-modules -s -l 127.0.0.1"' >> /etc/supervisor/conf.d/supervisord.conf
-RUN echo 'user = www-data' >> /etc/supervisor/conf.d/supervisord.conf
-RUN echo 'startsecs = 0' >> /etc/supervisor/conf.d/supervisord.conf
-RUN echo 'autorestart = false' >> /etc/supervisor/conf.d/supervisord.conf
+RUN cd /etc/supervisor/conf.d \
+    && echo '[supervisord]' >> supervisord.conf \
+    && echo 'nodaemon = true' >> supervisord.conf \
+    && echo >> supervisord.conf \
+    && echo '[program:postfix]' >> supervisord.conf \
+    && echo 'process_name = master' >> supervisord.conf \
+    && echo 'directory = /etc/postfix' >> supervisord.conf \
+    && echo 'command = /usr/sbin/postfix -c /etc/postfix start' >> supervisord.conf \
+    && echo 'startsecs = 0' >> supervisord.conf \
+    && echo 'autorestart = false' >> supervisord.conf \
+    && echo >> supervisord.conf \
+    && echo '[program:redis-server]' >> supervisord.conf \
+    && echo 'command=redis-server /etc/redis/redis.conf' >> supervisord.conf \
+    && echo >> supervisord.conf \
+    && echo '[program:apache2]' >> supervisord.conf \
+    && echo 'command=/bin/bash -c "source /etc/apache2/envvars && exec /usr/sbin/apache2 -D FOREGROUND"' >> supervisord.conf \
+    && echo >> supervisord.conf \
+    && echo '[program:resque]' >> supervisord.conf \
+    && echo 'command=/bin/bash /var/www/MISP/app/Console/worker/start.sh' >> supervisord.conf \
+    && echo 'user = www-data' >> supervisord.conf \
+    && echo 'startsecs = 0' >> supervisord.conf \
+    && echo 'autorestart = false' >> supervisord.conf \
+    && echo >> supervisord.conf \
+    && echo '[program:misp-modules]' >> supervisord.conf \
+    && echo 'command=/bin/bash -c "misp-modules -s -l 127.0.0.1"' >> supervisord.conf \
+    && echo 'user = www-data' >> supervisord.conf \
+    && echo 'startsecs = 0' >> supervisord.conf \
+    && echo 'autorestart = false' >> supervisord.conf
 # Modify syslog configuration
 RUN sed -i -E 's/^(\s*)system\(\);/\1unix-stream("\/dev\/log");/' /etc/syslog-ng/syslog-ng.conf
 
