@@ -60,18 +60,16 @@ RUN git submodule update --init --recursive
 # Make git ignore filesystem permission differences for submodules
 RUN git submodule foreach --recursive git config core.filemode false
 
-WORKDIR /var/www/MISP/app/files/scripts
-RUN git clone https://github.com/CybOXProject/python-cybox.git
-RUN git clone https://github.com/STIXProject/python-stix.git
+RUN cd /var/www/MISP/app/files/scripts \
+	&& git clone -b v2.1.0.12 https://github.com/CybOXProject/python-cybox.git \
+    && git clone -b v1.1.1.4 https://github.com/STIXProject/python-stix.git
 
 WORKDIR /var/www/MISP/app/files/scripts/python-cybox
-RUN git checkout v2.1.0.12
 USER root
 RUN python setup.py install
 
 USER www-data
 WORKDIR /var/www/MISP/app/files/scripts/python-stix
-RUN git checkout v1.1.1.4
 USER root
 RUN python setup.py install
 
@@ -82,15 +80,15 @@ RUN git submodule update
 WORKDIR /var/www/MISP/app
 
 # FIX COMPOSER
-RUN curl --fail --location -o composer-setup.php https://getcomposer.org/installer
-RUN php -r "if (hash_file('sha384', 'composer-setup.php') === 'a5c698ffe4b8e849a443b120cd5ba38043260d5c4023dbf93e1558871f1f07f58274fc6f4c93bcfd858c6bd0775cd8d1') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
-RUN php composer-setup.php
-RUN php -r "unlink('composer-setup.php');"
+RUN curl --fail --location -o composer-setup.php https://getcomposer.org/installer \
+    && php -r "if (hash_file('sha384', 'composer-setup.php') === 'a5c698ffe4b8e849a443b120cd5ba38043260d5c4023dbf93e1558871f1f07f58274fc6f4c93bcfd858c6bd0775cd8d1') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" \
+    && php composer-setup.php \
+    && php -r "unlink('composer-setup.php');"
 # END FIX
 
-RUN php composer.phar update
-RUN php composer.phar config vendor-dir Vendor
-RUN php composer.phar install --ignore-platform-reqs
+RUN php composer.phar update \
+    && php composer.phar config vendor-dir Vendor \
+    && php composer.phar install --ignore-platform-reqs
 USER root
 RUN phpenmod redis
 USER www-data
@@ -137,12 +135,12 @@ RUN chmod a+x /var/www/MISP/app/Console/worker/start.sh
 RUN echo "sudo -u www-data bash /var/www/MISP/app/Console/worker/start.sh" >>/etc/rc.local
 
 # Install templates & stuff
-WORKDIR /var/www/MISP/app/files
-RUN rm -rf misp-objects && git clone https://github.com/MISP/misp-objects.git
-RUN rm -rf misp-galaxy && git clone https://github.com/MISP/misp-galaxy.git
-RUN rm -rf warninglists && git clone https://github.com/MISP/misp-warninglists.git ./warninglists
-RUN rm -rf taxonomies && git clone https://github.com/MISP/misp-taxonomies.git ./taxonomies
-RUN chown -R www-data:www-data misp-objects misp-galaxy warninglists taxonomies
+RUN cd /var/www/MISP/app/files \
+    && rm -rf misp-objects && git clone https://github.com/MISP/misp-objects.git \
+    && rm -rf misp-galaxy && git clone https://github.com/MISP/misp-galaxy.git \
+    && rm -rf warninglists && git clone https://github.com/MISP/misp-warninglists.git ./warninglists \
+    && rm -rf taxonomies && git clone https://github.com/MISP/misp-taxonomies.git ./taxonomies \
+    && chown -R www-data:www-data misp-objects misp-galaxy warninglists taxonomies
 
 # Install MISP build requirements
 RUN sudo -E apt-get -y install libpoppler58 libpoppler-dev libpoppler-cpp-dev
