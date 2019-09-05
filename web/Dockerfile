@@ -49,34 +49,32 @@ RUN apt-get clean
 # update setuptools because otherwise you'' get python errors
 RUN pip install --upgrade setuptools
 
-WORKDIR /var/www
 RUN chown www-data:www-data /var/www
 USER www-data
-RUN git clone https://github.com/MISP/MISP.git
-WORKDIR /var/www/MISP
-RUN git checkout tags/$(git describe --tags `git rev-list --tags --max-count=1`)
-RUN git config core.filemode false
-RUN git submodule update --init --recursive
-# Make git ignore filesystem permission differences for submodules
-RUN git submodule foreach --recursive git config core.filemode false
+
+# Download the main repository
+RUN cd /var/www && git clone https://github.com/MISP/MISP.git
+RUN cd /var/www/MISP \
+    && git checkout tags/$(git describe --tags `git rev-list --tags --max-count=1`) \
+	&& git config core.filemode false \
+    && git submodule update --init --recursive \
+	# Make git ignore filesystem permission differences for submodules \
+	&& git submodule foreach --recursive git config core.filemode false
 
 RUN cd /var/www/MISP/app/files/scripts \
 	&& git clone -b v2.1.0.12 https://github.com/CybOXProject/python-cybox.git \
     && git clone -b v1.1.1.4 https://github.com/STIXProject/python-stix.git
 
-WORKDIR /var/www/MISP/app/files/scripts/python-cybox
 USER root
-RUN python setup.py install
-
-USER www-data
-WORKDIR /var/www/MISP/app/files/scripts/python-stix
-USER root
-RUN python setup.py install
+RUN cd /var/www/MISP/app/files/scripts/python-cybox \
+	&& python setup.py install \
+    && cd /var/www/MISP/app/files/scripts/python-stix \
+	&& python setup.py install
 
 USER www-data
 WORKDIR /var/www/MISP
-RUN git submodule init
-RUN git submodule update
+RUN git submodule init \
+    && git submodule update
 WORKDIR /var/www/MISP/app
 
 # FIX COMPOSER
