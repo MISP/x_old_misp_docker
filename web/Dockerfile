@@ -100,44 +100,41 @@ RUN php composer.phar update \
     && php composer.phar install --ignore-platform-reqs
 USER root
 RUN phpenmod redis
-USER www-data
-RUN cp -fa /var/www/MISP/INSTALL/setup/config.php /var/www/MISP/app/Plugin/CakeResque/Config/config.php
-
-# Fix permissions
-USER root
-RUN chown -R www-data:www-data /var/www/MISP
-RUN chmod -R 750 /var/www/MISP
-RUN chmod -R g+ws /var/www/MISP/app/tmp
-RUN chmod -R g+ws /var/www/MISP/app/files
-RUN chmod -R g+ws /var/www/MISP/app/files/scripts/tmp
-RUN chmod +x /var/www/MISP/app/Console/cake
-
-RUN cp /var/www/MISP/INSTALL/misp.logrotate /etc/logrotate.d/misp
-
-# Redis Setup
-RUN sed -i 's/^\(daemonize\s*\)yes\s*$/\1no/g' /etc/redis/redis.conf
-
-# Apache Setup
-RUN cp /var/www/MISP/INSTALL/apache.misp.ubuntu /etc/apache2/sites-available/misp.conf
-RUN a2dissite 000-default
-RUN a2ensite misp
-RUN a2enmod rewrite
-RUN a2enmod headers
 
 # MISP base configuration
-RUN sudo -u www-data cp -a /var/www/MISP/app/Config/bootstrap.default.php /var/www/MISP/app/Config/bootstrap.php
-RUN sudo -u www-data cp -a /var/www/MISP/app/Config/database.default.php /var/www/MISP/app/Config/database.php
-RUN sudo -u www-data cp -a /var/www/MISP/app/Config/core.default.php /var/www/MISP/app/Config/core.php
-RUN sudo -u www-data cp -a /var/www/MISP/app/Config/config.default.php /var/www/MISP/app/Config/config.php
-RUN chown -R www-data:www-data /var/www/MISP/app/Config
-RUN chmod -R 750 /var/www/MISP/app/Config
+RUN cp -a /var/www/MISP/INSTALL/setup/config.php /var/www/MISP/app/Plugin/CakeResque/Config/config.php \
+    && cd /var/www/MISP/app/Config \
+    && cp -a bootstrap.default.php bootstrap.php \
+    && cp -a database.default.php database.php \
+    && cp -a core.default.php core.php \
+    && cp -a config.default.php config.php
 
 # Replace the default salt
 RUN sed -i -E "s/'salt'\s=>\s'(\S+)'/'salt' => '`openssl rand -base64 32|tr "/" "-"`'/" /var/www/MISP/app/Config/config.php
 
+# Fix permissions
+RUN chown -R www-data:www-data /var/www/MISP \
+    && chmod -R 750 /var/www/MISP \
+    && chmod -R g+ws /var/www/MISP/app/tmp \
+    && chmod -R g+ws /var/www/MISP/app/files \
+    && chmod -R g+ws /var/www/MISP/app/files/scripts/tmp \
+    && chmod +x /var/www/MISP/app/Console/cake
+
+# Apache Setup
+RUN cp /var/www/MISP/INSTALL/apache.misp.ubuntu /etc/apache2/sites-available/misp.conf \
+    && a2dismod status \
+    && a2dissite 000-default \
+    && a2ensite misp \
+    && a2enmod rewrite \
+    && a2enmod headers \
+    # Redis Setup \
+    && sed -i 's/^\(daemonize\s*\)yes\s*$/\1no/g' /etc/redis/redis.conf \
+    # Logrotate Setup \
+    && cp /var/www/MISP/INSTALL/misp.logrotate /etc/logrotate.d/misp
+
 # Enable workers at boot time
-RUN chmod a+x /var/www/MISP/app/Console/worker/start.sh
-RUN echo "sudo -u www-data bash /var/www/MISP/app/Console/worker/start.sh" >>/etc/rc.local
+RUN chmod a+x /var/www/MISP/app/Console/worker/start.sh \
+    && echo "sudo -u www-data bash /var/www/MISP/app/Console/worker/start.sh" >>/etc/rc.local
 
 # Install templates & stuff
 RUN cd /var/www/MISP/app/files \
