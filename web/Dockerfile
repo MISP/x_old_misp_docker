@@ -83,6 +83,7 @@ RUN php composer-setup.php
 RUN php -r "unlink('composer-setup.php');"
 # END FIX
 
+RUN php composer.phar update
 RUN php composer.phar config vendor-dir Vendor
 RUN php composer.phar install --ignore-platform-reqs
 USER root
