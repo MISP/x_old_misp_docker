@@ -44,6 +44,9 @@ RUN apt-get install -y python-dev python-pip libxml2-dev libxslt1-dev zlib1g-dev
 RUN apt-get install -y cron logrotate supervisor syslog-ng-core
 RUN apt-get clean
 
+# update setuptools because otherwise you'' get python errors
+RUN pip install --upgrade setuptools
+
 WORKDIR /var/www
 RUN chown www-data:www-data /var/www
 USER www-data
