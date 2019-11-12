@@ -97,6 +97,7 @@ RUN chmod -R 750 /var/www/MISP
 RUN chmod -R g+ws /var/www/MISP/app/tmp
 RUN chmod -R g+ws /var/www/MISP/app/files
 RUN chmod -R g+ws /var/www/MISP/app/files/scripts/tmp
+RUN chmod +x /var/www/MISP/app/Console/cake
 
 RUN cp /var/www/MISP/INSTALL/misp.logrotate /etc/logrotate.d/misp
 
