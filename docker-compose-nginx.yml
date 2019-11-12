@@ -20,7 +20,7 @@ services:
       - /dev/urandom:/dev/random
       - ${DATA_DIR}/web:/var/www/MISP
     environment:
-      - MYSQL_HOST=db
+      - MYSQL_HOST=${MYSQL_HOST}
       - MYSQL_DATABASE=${MYSQL_DATABASE}
       - MYSQL_USER=${MYSQL_USER}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
