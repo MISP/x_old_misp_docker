@@ -157,6 +157,7 @@ RUN pip3 install --upgrade pip
 RUN cat REQUIREMENTS | sed 's/aiohttp==3.4.4/aiohttp/g' > REQUIREMENTS
 RUN pip3 install --upgrade --ignore-installed urllib3
 RUN pip3 install --upgrade --ignore-installed requests
+RUN pip3 install --upgrade six
 RUN pip3 install zmq plyara stix stix2 CyBox mixbox maec PyMISP lief
 
 RUN sed -i 's/aiohttp.*/aiohttp/g' REQUIREMENTS
