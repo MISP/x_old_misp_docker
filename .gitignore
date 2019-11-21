@@ -1,2 +1,5 @@
 .env
 data
+nginx/conf.d/misp.key
+nginx/conf.d/misp.crt
+nginx/conf.d/misp.conf
