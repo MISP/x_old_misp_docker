@@ -18,9 +18,25 @@ The build is based on Ubuntu and will install all the required components. The f
 * Generation of the admin PGP key
 
 ## Config
-* add your "*.crt" and "*.key" files to the ./proxy/ssl folder
-If not implementing SSL (not recommended) then simply comment out the appropriate lines in the "./proxy/default.conf" file.
-* Update "server_name" in default.conf file (will implement ENVIRONMENT VARIABLE in the future)
+* Add your SSL certificate and key files to `./nginx/conf.d/misp.crt` and `./nginx/conf.d/misp.key`
+* Copy `template.env` to `.env` and configure environment variables.
+
+```
+MYSQL_HOST=db
+MYSQL_DATABASE=misp
+MYSQL_USER=misp
+MYSQL_PASSWORD=misp
+MYSQL_ROOT_PASSWORD=misp
+
+MISP_ADMIN_EMAIL=admin@admin.test
+MISP_ADMIN_PASSPHRASE=admin
+MISP_BASEURL=localhost
+
+POSTFIX_RELAY_HOST=relay.fqdn
+TIMEZONE=Europe/Brussels
+
+DATA_DIR=./data
+```
 
 # Optional NGINX config
 
