@@ -159,6 +159,8 @@ RUN sed -i \
         -e 's/url-normalize.*/url-normalize/g' \
         -e 's/^\(yarl\)\=.*/\1/g' \
         -e 's/^\(sigmatools\)\=.*/\1/' \
+        # apiosintDS requires Python > 3.5.2 which is not available on Xenial \
+        -e 's/apiosintDS=.*//g' \
         REQUIREMENTS
 RUN pip3 install --upgrade --ignore-installed urllib3
 RUN pip3 install --upgrade --ignore-installed requests 
