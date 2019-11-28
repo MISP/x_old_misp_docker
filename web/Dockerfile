@@ -148,22 +148,8 @@ RUN sudo -E apt-get -y install libpoppler73 libpoppler-dev libpoppler-cpp-dev
 # Install MISP Modules
 WORKDIR /opt
 RUN apt-get install -y python3 python3-pip libjpeg-dev
-# PIP3 fix
-RUN pip3 install --upgrade pip
-# END FIX
 RUN git clone https://github.com/MISP/misp-modules.git
-WORKDIR /opt/misp-modules
-RUN pip3 install --upgrade pip && \
-    cat REQUIREMENTS | sed 's/aiohttp==3.4.4/aiohttp/g' > REQUIREMENTS && \
-    pip3 install --upgrade --ignore-installed urllib3 && \
-    pip3 install --upgrade --ignore-installed requests
-
-RUN sed -i 's/aiohttp.*/aiohttp/g' REQUIREMENTS && \
-    sed -i 's/functools.*//g' REQUIREMENTS && \
-    sed -i 's/async-timeout.*/async-timeout/g' REQUIREMENTS && \
-    sed -i 's/url-normalize.*/url-normalize/g' REQUIREMENTS && \
-    sed -i 's/^\(yarl\)\=.*/\1/g' REQUIREMENTS && \
-    sed -i 's/^\(sigmatools\)\=.*/\1/' REQUIREMENTS && \
+RUN cd misp-modules && \
     pip3 install -I -r REQUIREMENTS && \
     pip3 install -I . && \
     echo "sudo -u www-data misp-modules -s -l 127.0.0.1 &" >>/etc/rc.local
