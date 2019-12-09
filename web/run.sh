@@ -23,6 +23,15 @@ if [ -r /.firstboot.tmp ]; then
                 rm /root/MISP.tgz
         fi
 
+        # Configure MISP config
+        CAKE="/var/www/MISP/app/Console/cake"
+
+        $CAKE Admin setSetting MISP.baseurl "$MISP_BASEURL"
+        $CAKE Admin setSetting Plugin.ZeroMQ_enable "$ZeroMQ_enable"
+        $CAKE Admin setSetting Plugin.ZeroMQ_port "$ZeroMQ_port"
+        $CAKE Admin setSetting Security.salt "$MISP_salt"
+
+
         echo "Configuring postfix"
         if [ -z "$POSTFIX_RELAY_HOST" ]; then
                 echo "POSTFIX_RELAY_HOST is not set, please configure Postfix manually later..."
@@ -45,13 +54,13 @@ if [ -r /.firstboot.tmp ]; then
                 echo "MYSQL_HOST is not set. Aborting."
                 exit 1
         fi
-		
+
 		# Waiting for DB to be ready
 		while ! mysqladmin ping -h"$MYSQL_HOST" --silent; do
 		    sleep 5
 			echo "Waiting for database to be ready..."
 		done
-		
+
         # Set MYSQL_PASSWORD
         if [ -z "$MYSQL_PASSWORD" ]; then
                 echo "MYSQL_PASSWORD is not set, use default value 'misp'"
@@ -141,4 +150,3 @@ fi
 echo "Starting supervisord"
 cd /
 exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
-          
