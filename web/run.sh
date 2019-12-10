@@ -160,7 +160,10 @@ $CAKE Admin setSetting "Plugin.ZeroMQ_include_attachments" false 2> /dev/null | 
 $CAKE Admin setSetting "Plugin.ZeroMQ_tag_notifications_enable" false 2> /dev/null | true
 $CAKE Admin setSetting "Plugin.ZeroMQ_audit_notifications_enable" false 2> /dev/null | true
 
-$CAKE Admin setSetting Plugin.ZeroMQ_enable "$ZeroMQ_enable" 2> /dev/null | true
+#Enabling zmq prior launching misp will fail and cannot recover..
+$CAKE Admin setSetting Plugin.ZeroMQ_enable false | true
+
+sed -i "s#'ZeroMQ_enable' => false#'ZeroMQ_enable' => true#" /var/www/MISP/app/Config/config.php
 
 # Start supervisord
 echo "Starting supervisord"
