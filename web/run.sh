@@ -145,20 +145,20 @@ $CAKE Admin setSetting MISP.baseurl "$MISP_BASEURL" 2> /dev/null | true
 $CAKE Admin setSetting Plugin.ZeroMQ_port "$ZeroMQ_port" 2> /dev/null | true
 $CAKE Admin setSetting Security.salt "$MISP_salt" 2> /dev/null | true
 
-$CAKE Admin setSetting "Plugin.ZeroMQ_event_notifications_enable" true > /dev/null
-$CAKE Admin setSetting "Plugin.ZeroMQ_object_notifications_enable" true > /dev/null
-$CAKE Admin setSetting "Plugin.ZeroMQ_object_reference_notifications_enable" true > /dev/null
-$CAKE Admin setSetting "Plugin.ZeroMQ_attribute_notifications_enable" true > /dev/null
-$CAKE Admin setSetting "Plugin.ZeroMQ_sighting_notifications_enable" true > /dev/null
-$CAKE Admin setSetting "Plugin.ZeroMQ_user_notifications_enable" true > /dev/null
-$CAKE Admin setSetting "Plugin.ZeroMQ_organisation_notifications_enable" true > /dev/null
-$CAKE Admin setSetting "Plugin.ZeroMQ_redis_host" "localhost" > /dev/null
-$CAKE Admin setSetting "Plugin.ZeroMQ_redis_port" 6379 > /dev/null
-$CAKE Admin setSetting "Plugin.ZeroMQ_redis_database" 1 > /dev/null
-$CAKE Admin setSetting "Plugin.ZeroMQ_redis_namespace" "mispq" > /dev/null
-$CAKE Admin setSetting "Plugin.ZeroMQ_include_attachments" false > /dev/null
-$CAKE Admin setSetting "Plugin.ZeroMQ_tag_notifications_enable" false > /dev/null
-$CAKE Admin setSetting "Plugin.ZeroMQ_audit_notifications_enable" false > /dev/null
+$CAKE Admin setSetting "Plugin.ZeroMQ_event_notifications_enable" true 2> /dev/null | true
+$CAKE Admin setSetting "Plugin.ZeroMQ_object_notifications_enable" true 2> /dev/null | true
+$CAKE Admin setSetting "Plugin.ZeroMQ_object_reference_notifications_enable" true 2> /dev/null | true
+$CAKE Admin setSetting "Plugin.ZeroMQ_attribute_notifications_enable" true 2> /dev/null | true
+$CAKE Admin setSetting "Plugin.ZeroMQ_sighting_notifications_enable" true 2> /dev/null | true
+$CAKE Admin setSetting "Plugin.ZeroMQ_user_notifications_enable" true 2> /dev/null | true
+$CAKE Admin setSetting "Plugin.ZeroMQ_organisation_notifications_enable" true 2> /dev/null | true
+$CAKE Admin setSetting "Plugin.ZeroMQ_redis_host" "localhost" 2> /dev/null | true
+$CAKE Admin setSetting "Plugin.ZeroMQ_redis_port" 6379 2> /dev/null | true
+$CAKE Admin setSetting "Plugin.ZeroMQ_redis_database" 1 2> /dev/null | true
+$CAKE Admin setSetting "Plugin.ZeroMQ_redis_namespace" "mispq" 2> /dev/null | true
+$CAKE Admin setSetting "Plugin.ZeroMQ_include_attachments" false 2> /dev/null | true
+$CAKE Admin setSetting "Plugin.ZeroMQ_tag_notifications_enable" false 2> /dev/null | true
+$CAKE Admin setSetting "Plugin.ZeroMQ_audit_notifications_enable" false 2> /dev/null | true
 
 $CAKE Admin setSetting Plugin.ZeroMQ_enable "$ZeroMQ_enable" 2> /dev/null | true
 
