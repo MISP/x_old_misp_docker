@@ -141,10 +141,10 @@ echo "Configure MISP"
 # Configure MISP config
 CAKE="/var/www/MISP/app/Console/cake"
 
-$CAKE Admin setSetting MISP.baseurl "$MISP_BASEURL"
-$CAKE Admin setSetting Plugin.ZeroMQ_enable "$ZeroMQ_enable"
-$CAKE Admin setSetting Plugin.ZeroMQ_port "$ZeroMQ_port"
-$CAKE Admin setSetting Security.salt "$MISP_salt"
+$CAKE Admin setSetting MISP.baseurl "$MISP_BASEURL" > /dev/null
+$CAKE Admin setSetting Plugin.ZeroMQ_port "$ZeroMQ_port" > /dev/null
+$CAKE Admin setSetting Security.salt "$MISP_salt" > /dev/null
+$CAKE Admin setSetting Plugin.ZeroMQ_enable "$ZeroMQ_enable" > /dev/null
 
 # Start supervisord
 echo "Starting supervisord"
