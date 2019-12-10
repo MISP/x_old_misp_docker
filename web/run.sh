@@ -23,15 +23,6 @@ if [ -r /.firstboot.tmp ]; then
                 rm /root/MISP.tgz
         fi
 
-        # Configure MISP config
-        CAKE="/var/www/MISP/app/Console/cake"
-
-        $CAKE Admin setSetting MISP.baseurl "$MISP_BASEURL"
-        $CAKE Admin setSetting Plugin.ZeroMQ_enable "$ZeroMQ_enable"
-        $CAKE Admin setSetting Plugin.ZeroMQ_port "$ZeroMQ_port"
-        $CAKE Admin setSetting Security.salt "$MISP_salt"
-
-
         echo "Configuring postfix"
         if [ -z "$POSTFIX_RELAY_HOST" ]; then
                 echo "POSTFIX_RELAY_HOST is not set, please configure Postfix manually later..."
@@ -145,6 +136,15 @@ Don't forget:
 __WELCOME__
         rm -f /.firstboot.tmp
 fi
+
+echo "Configure MISP"
+# Configure MISP config
+CAKE="/var/www/MISP/app/Console/cake"
+
+$CAKE Admin setSetting MISP.baseurl "$MISP_BASEURL"
+$CAKE Admin setSetting Plugin.ZeroMQ_enable "$ZeroMQ_enable"
+$CAKE Admin setSetting Plugin.ZeroMQ_port "$ZeroMQ_port"
+$CAKE Admin setSetting Security.salt "$MISP_salt"
 
 # Start supervisord
 echo "Starting supervisord"
