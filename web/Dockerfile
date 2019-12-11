@@ -197,7 +197,7 @@ RUN echo '' >> /etc/supervisor/conf.d/supervisord.conf
 RUN echo '[program:misp-modules]' >> /etc/supervisor/conf.d/supervisord.conf; echo 'command=/bin/bash -c "misp-modules -s -l 127.0.0.1"' >> /etc/supervisor/conf.d/supervisord.conf; echo 'user = www-data' >> /etc/supervisor/conf.d/supervisord.conf; echo 'startsecs = 0' >> /etc/supervisor/conf.d/supervisord.conf; echo 'autorestart = false' >> /etc/supervisor/conf.d/supervisord.conf
 
 # Adding configuration to Supervisord to enable zmq after MISP is started
-RUN echo '\n[program:zmq]\ncommand=sleep 120; /var/www/MISP/app/Console/cake Admin setSetting Plugin.ZeroMQ_enable true\nstartsecs = 0\nautostart = true\nautorestart = false\nstartretries = 1\npriority=1' >> /etc/supervisor/conf.d/supervisord.conf
+RUN echo '\n[program:zmq]\ncommand=/bin/bash -c "sleep 120; /var/www/MISP/app/Console/cake Admin setSetting Plugin.ZeroMQ_enable true"\nstartsecs = 0\nautostart = true\nautorestart = false\nstartretries = 1\npriority=1' >> /etc/supervisor/conf.d/supervisord.conf
 
 # Modify syslog configuration
 RUN sed -i -E 's/^(\s*)system\(\);/\1unix-stream("\/dev\/log");/' /etc/syslog-ng/syslog-ng.conf
