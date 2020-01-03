@@ -175,7 +175,7 @@ RUN echo 'nodaemon = true' >> /etc/supervisor/conf.d/supervisord.conf
 RUN echo '' >> /etc/supervisor/conf.d/supervisord.conf
 RUN echo '[program:postfix]' >> /etc/supervisor/conf.d/supervisord.conf
 RUN echo 'process_name = master' >> /etc/supervisor/conf.d/supervisord.conf
-RUN echo 'directory = /etc/postfix' >> ./etc/supervisor/conf.d/supervisord.conf
+RUN echo 'directory = /etc/postfix' >> /etc/supervisor/conf.d/supervisord.conf
 RUN echo 'command = /usr/sbin/postfix -c /etc/postfix start' >> /etc/supervisor/conf.d/supervisord.conf
 RUN echo 'startsecs = 0' >> /etc/supervisor/conf.d/supervisord.conf
 RUN echo 'autorestart = false' >> /etc/supervisor/conf.d/supervisord.conf
