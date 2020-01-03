@@ -6,7 +6,7 @@
 # 2016/03/03 - First release
 # 2017/06/02 - Updated
 # 2018/04/04 - Added objects templates
-# 
+#
 
 # We are based on Ubuntu:latest
 FROM ubuntu:xenial
@@ -81,7 +81,7 @@ WORKDIR /var/www/MISP/app
 
 # FIX COMPOSER
 RUN curl --fail --location -o composer-setup.php https://getcomposer.org/installer
-RUN php -r "if (hash_file('sha384', 'composer-setup.php') === 'a5c698ffe4b8e849a443b120cd5ba38043260d5c4023dbf93e1558871f1f07f58274fc6f4c93bcfd858c6bd0775cd8d1') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+RUN EXPECTED_SIGNATURE="$(curl https://composer.github.io/installer.sig)"; php -r "if (hash_file('sha384', 'composer-setup.php') == '$(echo $EXPECTED_SIGNATURE)' ) { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
 RUN php composer-setup.php
 RUN php -r "unlink('composer-setup.php');"
 # END FIX
@@ -156,7 +156,7 @@ WORKDIR /opt/misp-modules
 RUN pip3 install --upgrade pip
 RUN cat REQUIREMENTS | sed 's/aiohttp==3.4.4/aiohttp/g' > REQUIREMENTS
 RUN pip3 install --upgrade --ignore-installed urllib3
-RUN pip3 install --upgrade --ignore-installed requests 
+RUN pip3 install --upgrade --ignore-installed requests
 
 RUN sed -i 's/aiohttp.*/aiohttp/g' REQUIREMENTS
 RUN sed -i 's/functools.*//g' REQUIREMENTS
