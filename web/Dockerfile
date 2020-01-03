@@ -40,7 +40,8 @@ RUN sed -i "s/memory_limit = 128M/memory_limit = 2048M/" /etc/php/7.2/apache2/ph
 RUN sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 50M/" /etc/php/7.2/apache2/php.ini
 RUN sed -i "s/post_max_size = 8M/post_max_size = 50M/" /etc/php/7.2/apache2/php.ini
 
-RUN apt-get install -y python-dev python-pip libxml2-dev libxslt1-dev zlib1g-dev python-setuptools libfuzzy-dev python-lxml python3-lxml
+RUN apt-get install -y python-dev python-pip libxml2-dev libxslt1-dev zlib1g-dev python-setuptools libfuzzy-dev python-lxml python3-lxml libpq5 libjpeg-dev tesseract-ocr libpoppler-cpp-dev imagemagick libopencv-dev zbar-tools libzbar0 libzbar-dev
+
 RUN apt-get install -y cron logrotate supervisor syslog-ng-core
 RUN apt-get clean
 
@@ -157,9 +158,6 @@ RUN pip3 install --upgrade pip
 RUN cat REQUIREMENTS | sed 's/aiohttp==3.4.4/aiohttp/g' > REQUIREMENTS
 RUN pip3 install --upgrade --ignore-installed urllib3
 RUN pip3 install --upgrade --ignore-installed requests
-RUN pip3 install --upgrade six
-RUN pip3 install git+https://github.com/kbandla/pydeep.git
-RUN pip3 install setuptools --upgrade; pip3 install zmq plyara stix stix2 CyBox mixbox maec PyMISP lief
 
 RUN sed -i 's/aiohttp.*/aiohttp/g' REQUIREMENTS
 RUN sed -i 's/functools.*//g' REQUIREMENTS
@@ -177,7 +175,7 @@ RUN echo 'nodaemon = true' >> /etc/supervisor/conf.d/supervisord.conf
 RUN echo '' >> /etc/supervisor/conf.d/supervisord.conf
 RUN echo '[program:postfix]' >> /etc/supervisor/conf.d/supervisord.conf
 RUN echo 'process_name = master' >> /etc/supervisor/conf.d/supervisord.conf
-RUN echo 'directory = /etc/postfix' >> /etc/supervisor/conf.d/supervisord.conf
+RUN echo 'directory = /etc/postfix' >> ./etc/supervisor/conf.d/supervisord.conf
 RUN echo 'command = /usr/sbin/postfix -c /etc/postfix start' >> /etc/supervisor/conf.d/supervisord.conf
 RUN echo 'startsecs = 0' >> /etc/supervisor/conf.d/supervisord.conf
 RUN echo 'autorestart = false' >> /etc/supervisor/conf.d/supervisord.conf
@@ -194,11 +192,11 @@ RUN echo 'user = www-data' >> /etc/supervisor/conf.d/supervisord.conf
 RUN echo 'startsecs = 0' >> /etc/supervisor/conf.d/supervisord.conf
 RUN echo 'autorestart = false' >> /etc/supervisor/conf.d/supervisord.conf
 RUN echo '' >> /etc/supervisor/conf.d/supervisord.conf
-RUN echo '[program:misp-modules]' >> /etc/supervisor/conf.d/supervisord.conf; echo 'command=/bin/bash -c "misp-modules -s -l 127.0.0.1"' >> /etc/supervisor/conf.d/supervisord.conf; echo 'user = www-data' >> /etc/supervisor/conf.d/supervisord.conf; echo 'startsecs = 0' >> /etc/supervisor/conf.d/supervisord.conf; echo 'autorestart = false' >> /etc/supervisor/conf.d/supervisord.conf
-
-# Adding configuration to Supervisord to enable zmq after MISP is started
-RUN echo '\n[program:zmq]\ncommand=/bin/bash -c "sleep 120; /var/www/MISP/app/Console/cake Admin setSetting Plugin.ZeroMQ_enable true"\nstartsecs = 0\nautostart = true\nautorestart = false\nstartretries = 1\npriority=1' >> /etc/supervisor/conf.d/supervisord.conf
-
+RUN echo '[program:misp-modules]' >> /etc/supervisor/conf.d/supervisord.conf
+RUN echo 'command=/bin/bash -c "misp-modules -s -l 127.0.0.1"' >> /etc/supervisor/conf.d/supervisord.conf
+RUN echo 'user = www-data' >> /etc/supervisor/conf.d/supervisord.conf
+RUN echo 'startsecs = 0' >> /etc/supervisor/conf.d/supervisord.conf
+RUN echo 'autorestart = false' >> /etc/supervisor/conf.d/supervisord.conf
 # Modify syslog configuration
 RUN sed -i -E 's/^(\s*)system\(\);/\1unix-stream("\/dev\/log");/' /etc/syslog-ng/syslog-ng.conf
 
