@@ -210,7 +210,8 @@ $SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_services_enable" true
 $SUDO_WWW $CAKE Admin setSetting "GnuPG.email" $MISP_ADMIN_EMAIL
 $SUDO_WWW $CAKE Admin setSetting "GnuPG.homedir" /var/www/MISP
 $SUDO_WWW $CAKE Admin setSetting "GnuPG.binary" /usr/bin/gpg
-
+$SUDO_WWW $CAKE Admin setSetting "GnuPG.email" $MISP_ADMIN_EMAIL
+$SUDO_WWW $CAKE Admin setSetting "GnuPG.password" $PASSPHRASE_GPG
 
 # Start supervisord
 echo "Starting supervisord"
