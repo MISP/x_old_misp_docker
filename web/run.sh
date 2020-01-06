@@ -213,6 +213,8 @@ $SUDO_WWW $CAKE Admin setSetting "GnuPG.binary" /usr/bin/gpg
 $SUDO_WWW $CAKE Admin setSetting "GnuPG.email" $MISP_ADMIN_EMAIL
 $SUDO_WWW $CAKE Admin setSetting "GnuPG.password" $PASSPHRASE_GPG
 
+sed -i "s,'host_org_id' => 1,'host_org_id' => 2," /var/www/MISP/app/Config/config.php
+
 # Start supervisord
 echo "Starting supervisord"
 cd /
