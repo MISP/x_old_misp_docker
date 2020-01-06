@@ -163,6 +163,54 @@ $CAKE Admin setSetting "Plugin.ZeroMQ_audit_notifications_enable" false 2> /dev/
 #Enabling zmq prior launching misp will fail and cannot recover..
 $CAKE Admin setSetting Plugin.ZeroMQ_enable false | true
 
+$CAKE Admin setSetting MISP.python_bin /usr/bin/python3
+
+# Enable Enrichment, set better timeouts
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_services_enable" true
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_hover_enable" true
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_timeout" 300
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_hover_timeout" 150
+# TODO:"Investigate why the next one fails"
+#$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_asn_history_enabled" true
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_cve_enabled" true
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_dns_enabled" true
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_btc_steroids_enabled" true
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_ipasn_enabled" true
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_yara_syntax_validator_enabled" true
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_yara_query_enabled" true
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_pdf_enabled" true
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_docx_enabled" true
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_xlsx_enabled" true
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_pptx_enabled" true
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_ods_enabled" true
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_odt_enabled" true
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_services_url" "http://127.0.0.1"
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_services_port" 6666
+
+# Enable Import modules, set better timeout
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Import_services_enable" true
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Import_services_url" "http://127.0.0.1"
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Import_services_port" 6666
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Import_timeout" 300
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Import_ocr_enabled" true
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Import_mispjson_enabled" true
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Import_openiocimport_enabled" true
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Import_threatanalyzer_import_enabled" true
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Import_csvimport_enabled" true
+
+# Enable Export modules, set better timeout
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Export_services_enable" true
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Export_services_url" "http://127.0.0.1"
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Export_services_port" 6666
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Export_timeout" 300
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Export_pdfexport_enabled" true
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_services_enable" true
+
+# Config for GPG
+$SUDO_WWW $CAKE Admin setSetting "GnuPG.email" $MISP_ADMIN_EMAIL
+$SUDO_WWW $CAKE Admin setSetting "GnuPG.homedir" /var/www/MISP
+$SUDO_WWW $CAKE Admin setSetting "GnuPG.binary" /usr/bin/gpg
+
 
 # Start supervisord
 echo "Starting supervisord"

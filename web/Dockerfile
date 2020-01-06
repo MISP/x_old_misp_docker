@@ -155,9 +155,11 @@ RUN pip install --upgrade pip
 RUN git clone https://github.com/MISP/misp-modules.git
 WORKDIR /opt/misp-modules
 RUN pip3 install --upgrade pip
-RUN cat REQUIREMENTS | sed 's/aiohttp==3.4.4/aiohttp/g' > REQUIREMENTS
+RUN sed -i 's/aiohttp==3.4.4/aiohttp/g' REQUIREMENTS
 RUN pip3 install --upgrade --ignore-installed urllib3
 RUN pip3 install --upgrade --ignore-installed requests
+RUN pip3 install zmq plyara stix stix2 CyBox mixbox maec PyMISP lief python-magic
+RUN pip3 install git+https://github.com/kbandla/pydeep.git
 
 RUN sed -i 's/aiohttp.*/aiohttp/g' REQUIREMENTS
 RUN sed -i 's/functools.*//g' REQUIREMENTS
