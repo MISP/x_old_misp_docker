@@ -9,7 +9,7 @@
 #
 
 # We are based on Ubuntu:latest
-FROM ubuntu:xenial
+FROM ubuntu:bionic
 MAINTAINER Xavier Mertens <xavier@rootshell.be>
 
 # Install core components
