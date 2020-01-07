@@ -108,20 +108,9 @@ if [ -r /.firstboot.tmp ]; then
         if [ -z "$MISP_ADMIN_EMAIL" -o -z "$MISP_ADMIN_PASSPHRASE" ]; then
                 echo "No admin details provided, don't forget to generate the PGP key manually!"
         else
-                echo "Generating admin PGP key ... (please be patient, we need some entropy)"
-                cat >/tmp/gpg.tmp <<GPGEOF
-%echo Generating a basic OpenPGP key
-Key-Type: RSA
-Key-Length: 2048
-Name-Real: MISP Admin
-Name-Email: $MISP_ADMIN_EMAIL
-Expire-Date: 0
-Passphrase: $MISP_ADMIN_PASSPHRASE
-%commit
-%echo Done
-GPGEOF
-                sudo -u www-data gpg --homedir /var/www/MISP/.gnupg --gen-key --batch /tmp/gpg.tmp >>/tmp/install.log
-                rm -f /tmp/gpg.tmp
+
+                echo "Assuming we have a GPG key at /tmp/key.asc"
+                sudo -u www-data gpg --import /tmp/key.asc >>/tmp/install.log
 		sudo -u www-data gpg --homedir /var/www/MISP/.gnupg --export --armor $MISP_ADMIN_EMAIL > /var/www/MISP/app/webroot/gpg.asc
         fi
 
