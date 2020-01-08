@@ -9,8 +9,7 @@
 #
 
 # We are based on Ubuntu:latest
-FROM ubuntu:xenial
-MAINTAINER Xavier Mertens <xavier@rootshell.be>
+FROM ubuntu:bionic
 
 # Install core components
 ENV DEBIAN_FRONTEND noninteractive
@@ -29,10 +28,11 @@ RUN a2dismod status
 RUN a2dissite 000-default
 
 # PHP 7.2
-RUN apt-get install -y libapache2-mod-php php7.2 php7.2-cli php-crypt-gpg php7.2-dev php7.2-json php7.2-mysql php7.2-opcache php7.2-readline php7.2-redis php7.2-xml
-RUN apt-get install -y php-pear pkg-config libbson-1.0 libmongoc-1.0-0 php-xml php-dev php-gd
+RUN apt-get install -y libapache2-mod-php7.2 php7.2 php7.2-cli php7.2-dev php7.2-json php7.2-mysql php7.2-opcache php7.2-readline php7.2-redis php7.2-xml
+RUN apt-get install -y php-pear pkg-config libbson-1.0 libmongoc-1.0-0 php7.2-xml php7.2-dev php7.2-gd
 # install MySQL PDO extension
-RUN apt-get install -y php-mysql
+RUN apt-get install -y php7.2-mysql
+RUN apt-get install -y php7.2-mbstring
 
 # Fix php.ini with recommended settings
 RUN sed -i "s/max_execution_time = 30/max_execution_time = 300/" /etc/php/7.2/apache2/php.ini
@@ -143,7 +143,7 @@ RUN rm -rf taxonomies && git clone https://github.com/MISP/misp-taxonomies.git .
 RUN chown -R www-data:www-data misp-objects misp-galaxy warninglists taxonomies
 
 # Install MISP build requirements
-RUN sudo -E apt-get -y install libpoppler58 libpoppler-dev libpoppler-cpp-dev
+RUN sudo -E apt-get -y install libpoppler73 libpoppler-dev libpoppler-cpp-dev
 
 # Install MISP Modules
 WORKDIR /opt
