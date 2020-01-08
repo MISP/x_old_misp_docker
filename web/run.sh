@@ -110,7 +110,8 @@ if [ -r /.firstboot.tmp ]; then
         else
 
                 echo "Assuming we have a GPG key at /tmp/key.asc"
-                sudo -u www-data gpg --import /tmp/key.asc >>/tmp/install.log
+                ls /tmp/key
+                sudo -u www-data gpg --import /tmp/key/* >>/tmp/install.log
 		sudo -u www-data gpg --homedir /var/www/MISP/.gnupg --export --armor $MISP_ADMIN_EMAIL > /var/www/MISP/app/webroot/gpg.asc
         fi
 
