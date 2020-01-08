@@ -111,7 +111,8 @@ if [ -r /.firstboot.tmp ]; then
 
                 echo "Assuming we have a GPG key at /tmp/key.asc"
                 ls /tmp/key
-                GPG_TTY=$(tty); sudo -u www-data gpg --homedir /var/www/MISP/.gnupg --import /tmp/key/*
+                echo "importing key"; sudo -u www-data gpg --homedir /var/www/MISP/.gnupg --import /tmp/key/* | true
+                echo "key imported"
 		sudo -u www-data gpg --homedir /var/www/MISP/.gnupg --export --armor $MISP_ADMIN_EMAIL > /var/www/MISP/app/webroot/gpg.asc
         fi
 
