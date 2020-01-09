@@ -13,7 +13,6 @@ RUN apt-get update && \
 
 RUN locale-gen en_US.UTF-8
 ENV LANG en_US.UTF-8
-RUN add-apt-repository -y ppa:ondrej/php && apt-get update
 
 # Apache
 RUN apt-get install -y apache2 apache2-doc apache2-utils && \
