@@ -30,13 +30,11 @@ RUN apt-get install -y libapache2-mod-php7.2 php7.2 php7.2-cli php7.2-dev \
     apt-get install -y php7.2-mbstring
 
 # Fix php.ini with recommended settings
-RUN sed -i "s/max_execution_time = 30/max_execution_time = 300/" \
-        /etc/php/7.2/apache2/php.ini && \
-    sed -i "s/memory_limit = 128M/memory_limit = 2048M/" \
-        /etc/php/7.2/apache2/php.ini && \
-    sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 50M/" \
-        /etc/php/7.2/apache2/php.ini && \
-    sed -i "s/post_max_size = 8M/post_max_size = 50M/" \
+RUN sed -i \
+        -e "s/max_execution_time = 30/max_execution_time = 300/" \
+        -e "s/memory_limit = 128M/memory_limit = 2048M/" \
+        -e "s/upload_max_filesize = 2M/upload_max_filesize = 50M/" \
+        -e "s/post_max_size = 8M/post_max_size = 50M/" \
         /etc/php/7.2/apache2/php.ini
 
 RUN apt-get install -y python-dev python-pip libxml2-dev libxslt1-dev \
