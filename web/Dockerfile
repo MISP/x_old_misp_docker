@@ -55,20 +55,9 @@ RUN git checkout tags/$(git describe --tags `git rev-list --tags --max-count=1`)
     git submodule update --init --recursive && \
     git submodule foreach --recursive git config core.filemode false
 
-WORKDIR /var/www/MISP/app/files/scripts
-RUN git clone https://github.com/CybOXProject/python-cybox.git && \
-    git clone https://github.com/STIXProject/python-stix.git
-
-WORKDIR /var/www/MISP/app/files/scripts/python-cybox
-RUN git checkout v2.1.0.12
 USER root
-RUN python setup.py install
-
-USER www-data
-WORKDIR /var/www/MISP/app/files/scripts/python-stix
-RUN git checkout v1.1.1.4
-USER root
-RUN python setup.py install
+RUN pip3 install git+https://github.com/STIXProject/python-stix.git \
+                 git+https://github.com/CybOXProject/python-cybox.git
 
 USER www-data
 WORKDIR /var/www/MISP
