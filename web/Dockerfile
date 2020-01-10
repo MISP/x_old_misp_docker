@@ -39,13 +39,11 @@ RUN sed -i "s/max_execution_time = 30/max_execution_time = 300/" \
     sed -i "s/post_max_size = 8M/post_max_size = 50M/" \
         /etc/php/7.2/apache2/php.ini
 
-RUN apt-get install -y python-dev python-pip libxml2-dev libxslt1-dev \
-        zlib1g-dev python-setuptools libfuzzy-dev python-lxml python3-lxml && \
+RUN apt-get install -y python3-dev python3-pip python3-setuptools \
+        python3-lxml libjpeg-dev \
+        libxml2-dev libxslt1-dev zlib1g-dev libfuzzy-dev && \
     apt-get install -y cron logrotate supervisor syslog-ng-core && \
     apt-get clean
-
-# update setuptools because otherwise you'' get python errors
-RUN pip install --upgrade setuptools
 
 WORKDIR /var/www
 RUN chown www-data:www-data /var/www
@@ -147,7 +145,6 @@ RUN sudo -E apt-get -y install libpoppler73 libpoppler-dev libpoppler-cpp-dev
 
 # Install MISP Modules
 WORKDIR /opt
-RUN apt-get install -y python3 python3-pip libjpeg-dev
 RUN git clone https://github.com/MISP/misp-modules.git
 RUN cd misp-modules && \
     pip3 install -I -r REQUIREMENTS && \
