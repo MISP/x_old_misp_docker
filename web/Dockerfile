@@ -57,7 +57,11 @@ RUN git checkout tags/$(git describe --tags `git rev-list --tags --max-count=1`)
 
 USER root
 RUN pip3 install git+https://github.com/STIXProject/python-stix.git \
-                 git+https://github.com/CybOXProject/python-cybox.git
+                 git+https://github.com/CybOXProject/python-cybox.git \
+                 git+https://github.com/CybOXProject/mixbox.git \
+                 git+https://github.com/MAECProject/python-maec.git \
+                 /var/www/MISP/cti-python-stix2 \
+                 plyara
 
 USER www-data
 WORKDIR /var/www/MISP
