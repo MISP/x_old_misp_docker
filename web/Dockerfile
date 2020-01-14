@@ -169,7 +169,6 @@ RUN sed -i 's/^\(yarl\)\=.*/\1/g' REQUIREMENTS
 RUN sed -i 's/^\(sigmatools\)\=.*/\1/' REQUIREMENTS
 RUN pip3 install -I -r REQUIREMENTS
 RUN pip3 install -I .
-RUN echo "sudo -u www-data misp-modules -s -l 127.0.0.1 &" >>/etc/rc.local
 
 # Supervisord Setup
 RUN echo '[supervisord]' >> /etc/supervisor/conf.d/supervisord.conf
@@ -194,14 +193,12 @@ RUN echo 'user = www-data' >> /etc/supervisor/conf.d/supervisord.conf
 RUN echo 'startsecs = 0' >> /etc/supervisor/conf.d/supervisord.conf
 RUN echo 'autorestart = false' >> /etc/supervisor/conf.d/supervisord.conf
 RUN echo '' >> /etc/supervisor/conf.d/supervisord.conf
-RUN echo '[program:misp-modules]' >> /etc/supervisor/conf.d/supervisord.conf
-RUN echo 'command=/bin/bash -c "misp-modules -s -l 127.0.0.1"' >> /etc/supervisor/conf.d/supervisord.conf
-RUN echo 'user = www-data' >> /etc/supervisor/conf.d/supervisord.conf
-RUN echo 'startsecs = 0' >> /etc/supervisor/conf.d/supervisord.conf
-RUN echo 'autorestart = false' >> /etc/supervisor/conf.d/supervisord.conf
+
 # Modify syslog configuration
 RUN sed -i -E 's/^(\s*)system\(\);/\1unix-stream("\/dev\/log");/' /etc/syslog-ng/syslog-ng.conf
 
+# Fix Redis (Force bind on ipv4)
+RUN sed -i "s/bind .*/bind 127.0.0.1/g" /etc/redis/redis.conf
 # Add run script
 ADD run.sh /run.sh
 RUN chmod 0755 /run.sh
