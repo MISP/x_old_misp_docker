@@ -4,7 +4,6 @@ ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt update
 RUN apt-get install sudo git python3-dev python3-pip libpq5 libjpeg-dev tesseract-ocr libpoppler-cpp-dev imagemagick virtualenv libopencv-dev zbar-tools libzbar0 libzbar-dev libfuzzy-dev build-essential -y
-RUN apt-get install -y
 
 RUN adduser www-data sudo
 RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
