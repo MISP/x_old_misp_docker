@@ -111,7 +111,7 @@ if [ -r /.firstboot.tmp ]; then
 
                 echo "Assuming we have a GPG key at /tmp/key.asc"
                 ls /tmp/key
-                echo "importing key"; sudo -u www-data gpg --homedir /var/www/MISP/.gnupg --import /tmp/key/* | true
+                echo "importing key"; sudo -u www-data gpg --batch --homedir /var/www/MISP/.gnupg --passphrase $PASSPHRASE_GPG --import /tmp/key/* | true
                 echo "key imported"
 		sudo -u www-data gpg --homedir /var/www/MISP/.gnupg --export --armor $MISP_ADMIN_EMAIL > /var/www/MISP/app/webroot/gpg.asc
         fi
@@ -133,6 +133,13 @@ echo "Configure MISP"
 CAKE="/var/www/MISP/app/Console/cake"
 
 $CAKE Admin setSetting MISP.baseurl "$MISP_BASEURL" 2> /dev/null | true
+$CAKE Admin setSetting MISP.redis_host "$REDISHOST" 2> /dev/null | true
+$CAKE Admin setSetting MISP.redis_port $REDISPORT 2> /dev/null | true
+$CAKE Admin setSetting MISP.external_baseurl "$MISP_BASEURL" 2> /dev/null | true
+$CAKE Admin setSetting MISP.redis_host "$REDISPORT" 2> /dev/null | true
+$CAKE Admin setSetting MISP.live true 2> /dev/null | true
+
+
 $CAKE Admin setSetting Plugin.ZeroMQ_port "$ZeroMQ_port" 2> /dev/null | true
 $CAKE Admin setSetting Security.salt "$MISP_salt" 2> /dev/null | true
 
