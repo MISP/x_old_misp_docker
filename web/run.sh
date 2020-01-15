@@ -136,7 +136,6 @@ $CAKE Admin setSetting MISP.baseurl "$MISP_BASEURL" 2> /dev/null | true
 $CAKE Admin setSetting MISP.redis_host "$REDISHOST" 2> /dev/null | true
 $CAKE Admin setSetting MISP.redis_port $REDISPORT 2> /dev/null | true
 $CAKE Admin setSetting MISP.external_baseurl "$MISP_BASEURL" 2> /dev/null | true
-$CAKE Admin setSetting MISP.redis_host "$REDISPORT" 2> /dev/null | true
 $CAKE Admin setSetting MISP.live true 2> /dev/null | true
 
 
