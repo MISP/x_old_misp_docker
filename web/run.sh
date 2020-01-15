@@ -175,12 +175,12 @@ $SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_xlsx_enabled" true
 $SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_pptx_enabled" true
 $SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_ods_enabled" true
 $SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_odt_enabled" true
-$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_services_url" "http://misp-modules-service"
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_services_url" "http://$MISP_MODULE_SERVICE"
 $SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_services_port" 6666
 
 # Enable Import modules, set better timeout
 $SUDO_WWW $CAKE Admin setSetting "Plugin.Import_services_enable" true
-$SUDO_WWW $CAKE Admin setSetting "Plugin.Import_services_url" "http://misp-modules-service"
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Import_services_url" "http://$MISP_MODULE_SERVICE"
 $SUDO_WWW $CAKE Admin setSetting "Plugin.Import_services_port" 6666
 $SUDO_WWW $CAKE Admin setSetting "Plugin.Import_timeout" 300
 $SUDO_WWW $CAKE Admin setSetting "Plugin.Import_ocr_enabled" true
@@ -191,7 +191,7 @@ $SUDO_WWW $CAKE Admin setSetting "Plugin.Import_csvimport_enabled" true
 
 # Enable Export modules, set better timeout
 $SUDO_WWW $CAKE Admin setSetting "Plugin.Export_services_enable" true
-$SUDO_WWW $CAKE Admin setSetting "Plugin.Export_services_url" "http://misp-modules-service"
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Export_services_url" "http://$MISP_MODULE_SERVICE"
 $SUDO_WWW $CAKE Admin setSetting "Plugin.Export_services_port" 6666
 $SUDO_WWW $CAKE Admin setSetting "Plugin.Export_timeout" 300
 $SUDO_WWW $CAKE Admin setSetting "Plugin.Export_pdfexport_enabled" true
