@@ -265,7 +265,7 @@ $SUDO_WWW $CAKE Admin setSetting "Plugin.Sightings_sighting_db_enable" 1 2> /dev
 sed -i "s,'host_org_id' => 1,'host_org_id' => 2," /var/www/MISP/app/Config/config.php
 
 # Configure POSTFIX
-sudo postconf -e "relayhost = [email-smtp.ca-central-1.amazonaws.com]:587" \
+sudo postconf -e "relayhost = [email-smtp.us-east-1.amazonaws.com]:587" \
 "smtp_sasl_auth_enable = yes" \
 "smtp_sasl_security_options = noanonymous" \
 "smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd" \
