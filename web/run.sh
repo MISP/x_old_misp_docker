@@ -132,16 +132,67 @@ echo "Configure MISP"
 # Configure MISP config
 CAKE="/var/www/MISP/app/Console/cake"
 
-$CAKE Admin setSetting MISP.baseurl "$MISP_BASEURL" 2> /dev/null | true
-$CAKE Admin setSetting MISP.redis_host "$REDISHOST" 2> /dev/null | true
-$CAKE Admin setSetting MISP.redis_port $REDISPORT 2> /dev/null | true
-$CAKE Admin setSetting MISP.external_baseurl "$MISP_BASEURL" 2> /dev/null | true
-$CAKE Admin setSetting MISP.live true 2> /dev/null | true
+# Server Settings & Maintenance
+#
+$CAKE Admin setSetting "MISP.baseurl" "$MISP_BASEURL" 2> /dev/null | true
+$CAKE Admin setSetting "MISP.external_baseurl" "$MISP_BASEURL" 2> /dev/null | true
+$CAKE Admin setSetting "MISP.live" true 2> /dev/null | true
+$CAKE Admin setSetting "MISP.language" "eng" 2> /dev/null | true
+$CAKE Admin setSetting "MISP.email" "$MISP_EMAIL" 2> /dev/null | true
+# Org 0 - None
+# Org 1 - ORGNAME
+# Org 2 does not exist on first install. The first org created is assigned Org ID 2.
+$CAKE Admin setSetting "MISP.host_org_id" 2 2> /dev/null | true
+# MISP.default_event_distribution:
+# 1 - This Community Only
+# 2 - Connected Communities
+# 3 - All Commmunities
+$CAKE Admin setSetting "MISP.default_event_distribution" 1 2> /dev/null | true
+$CAKE Admin setSetting "MISP.default_event_tag_collection" 0 2> /dev/null | true
+$CAKE Admin setSetting "MISP.proposals_block_attributes" false 2> /dev/null | true
+$CAKE Admin setSetting "MISP.redis_host" "$REDISHOST" 2> /dev/null | true
+$CAKE Admin setSetting "MISP.redis_port" $REDISPORT 2> /dev/null | true
+$CAKE Admin setSetting "MISP.redis_database" $REDISDB 2> /dev/null | true
+$CAKE Admin setSetting "MISP.redis_password" $REDISPASSWORD 2> /dev/null | true
+# We're not using a python venv in the docker container.
+$CAKE Admin setSetting "MISP.python_bin" /usr/bin/python3 2> /dev/null | true
+$CAKE Admin setSetting "MISP.ssdeep_correlation_threshold" "40" 2> /dev/null | true
+$CAKE Admin setSetting "MISP.org" "$MISP_org" 2> /dev/null | true
+$CAKE Admin setSetting "MISP.contact" "$MISP_EMAIL" 2> /dev/null | true
+$CAKE Admin setSetting "MISP.extended_alert_subject" false 2> /dev/null | true
+# TODO: test param value is undefined
+#$CAKE Admin setSetting "MISP.default_event_threat_level" 4 2> /dev/null | true
+$CAKE Admin setSetting "MISP.default_event_threat_level" 4 2> /dev/null | true
+# Logging
+$CAKE Admin setSetting "MISP.log_client_ip" true 2> /dev/null | true
+$CAKE Admin setSetting "MISP.log_auth" true 2> /dev/null | true
+# We want delegation so ISAO members can be anonymous if they so chose.
+$CAKE Admin setSetting "MISP.delegation" true 2> /dev/null | true
+# TODO: test performance hit
+$CAKE Admin setSetting "MISP.showCorrelationsOnIndex" true 2> /dev/null | true
+$CAKE Admin setSetting "MISP.showProposalsCountOnIndex" true 2> /dev/null | true
+$CAKE Admin setSetting "MISP.showSightingsCountOnIndex" true 2> /dev/null | true
+$CAKE Admin setSetting "MISP.showDiscussionsCountOnIndex" true 2> /dev/null | true
+# Only org admins and admins should be editing user settings.
+$CAKE Admin setSetting "MISP.disableUserSelfManagement" true 2> /dev/null | true
 
+# Encryption Settings
+#
+# Config for GPG
+$SUDO_WWW $CAKE Admin setSetting "GnuPG.onlyencrypted" true 2> /dev/null | true
+$SUDO_WWW $CAKE Admin setSetting "GnuPG.email" $MISP_ADMIN_EMAIL 2> /dev/null | true
+$SUDO_WWW $CAKE Admin setSetting "GnuPG.homedir" /var/www/MISP/.gnupg 2> /dev/null | true
+$SUDO_WWW $CAKE Admin setSetting "GnuPG.binary" /usr/bin/gpg 2> /dev/null | true
+$SUDO_WWW $CAKE Admin setSetting "GnuPG.password" $PASSPHRASE_GPG 2> /dev/null | true
 
-$CAKE Admin setSetting Plugin.ZeroMQ_port "$ZeroMQ_port" 2> /dev/null | true
-$CAKE Admin setSetting Security.salt "$MISP_salt" 2> /dev/null | true
+# Security Settings
+#
+$CAKE Admin setSetting "Security.salt" "$MISP_salt" 2> /dev/null | true
 
+# Plugin Settings
+#
+# ZeroMQ
+$CAKE Admin setSetting "Plugin.ZeroMQ_port" "$ZeroMQ_port" 2> /dev/null | true
 $CAKE Admin setSetting "Plugin.ZeroMQ_event_notifications_enable" true 2> /dev/null | true
 $CAKE Admin setSetting "Plugin.ZeroMQ_object_notifications_enable" true 2> /dev/null | true
 $CAKE Admin setSetting "Plugin.ZeroMQ_object_reference_notifications_enable" true 2> /dev/null | true
@@ -149,66 +200,67 @@ $CAKE Admin setSetting "Plugin.ZeroMQ_attribute_notifications_enable" true 2> /d
 $CAKE Admin setSetting "Plugin.ZeroMQ_sighting_notifications_enable" true 2> /dev/null | true
 $CAKE Admin setSetting "Plugin.ZeroMQ_user_notifications_enable" true 2> /dev/null | true
 $CAKE Admin setSetting "Plugin.ZeroMQ_organisation_notifications_enable" true 2> /dev/null | true
-$CAKE Admin setSetting "Plugin.ZeroMQ_redis_host" "$REDISHOST" 2> /dev/null | true
+$CAKE Admin setSetting "Plugin.ZeroMQ_redis_host" "$REDISHOST" true 2> /dev/null | true
 $CAKE Admin setSetting "Plugin.ZeroMQ_redis_port" $REDISPORT 2> /dev/null | true
 $CAKE Admin setSetting "Plugin.ZeroMQ_redis_database" 1 2> /dev/null | true
 $CAKE Admin setSetting "Plugin.ZeroMQ_redis_namespace" "mispq" 2> /dev/null | true
 $CAKE Admin setSetting "Plugin.ZeroMQ_include_attachments" false 2> /dev/null | true
-$CAKE Admin setSetting "Plugin.ZeroMQ_tag_notifications_enable" false 2> /dev/null | true
-$CAKE Admin setSetting "Plugin.ZeroMQ_audit_notifications_enable" false 2> /dev/null | true
-
+$CAKE Admin setSetting "Plugin.ZeroMQ_tag_notifications_enable" true 2> /dev/null | true
+$CAKE Admin setSetting "Plugin.ZeroMQ_audit_notifications_enable" true 2> /dev/null | true
 #Enabling zmq prior launching misp will fail and cannot recover..
-$CAKE Admin setSetting Plugin.ZeroMQ_enable false | true
+$CAKE Admin setSetting "Plugin.ZeroMQ_enable" false 2> /dev/null | true
 
-$CAKE Admin setSetting MISP.python_bin /usr/bin/python3
-
-# Enable Enrichment, set better timeouts
-$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_services_enable" true
-$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_hover_enable" true
-$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_timeout" 300
-$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_hover_timeout" 150
+# Enrichments
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_services_enable" true 2> /dev/null | true
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_hover_enable" true 2> /dev/null | true
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_timeout" 300  2> /dev/null | true
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_hover_timeout" 150 2> /dev/null | true
 # TODO:"Investigate why the next one fails"
-#$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_asn_history_enabled" true
-$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_cve_enabled" true
-$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_dns_enabled" true
-$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_btc_steroids_enabled" true
-$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_ipasn_enabled" true
-$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_yara_syntax_validator_enabled" true
-$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_yara_query_enabled" true
-$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_pdf_enabled" true
-$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_docx_enabled" true
-$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_xlsx_enabled" true
-$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_pptx_enabled" true
-$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_ods_enabled" true
-$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_odt_enabled" true
-$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_services_url" "http://$MISP_MODULE_SERVICE"
-$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_services_port" 6666
+#$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_asn_history_enabled" true 2> /dev/null | true
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_cve_enabled" true 2> /dev/null | true
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_dns_enabled" true 2> /dev/null | true
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_btc_steroids_enabled" true 2> /dev/null | true
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_ipasn_enabled" true 2> /dev/null | true
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_yara_syntax_validator_enabled" true 2> /dev/null | true
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_yara_query_enabled" true 2> /dev/null | true
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_pdf_enabled" true 2> /dev/null | true
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_docx_enabled" true 2> /dev/null | true
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_xlsx_enabled" true 2> /dev/null | true
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_pptx_enabled" true 2> /dev/null | true
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_ods_enabled" true 2> /dev/null | true
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_odt_enabled" true 2> /dev/null | true
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_sigma_queries_enabled" true 2> /dev/null | true
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_sigma_syntax_validator_enabled" true 2> /dev/null | true
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_stix2_pattern_syntax_validator_enabled" true 2> /dev/null | true
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_services_url" "$MISP_MODULE_SERVICE" 2> /dev/null | true
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_services_port" 6666 2> /dev/null | true
 
-# Enable Import modules, set better timeout
-$SUDO_WWW $CAKE Admin setSetting "Plugin.Import_services_enable" true
-$SUDO_WWW $CAKE Admin setSetting "Plugin.Import_services_url" "http://$MISP_MODULE_SERVICE"
-$SUDO_WWW $CAKE Admin setSetting "Plugin.Import_services_port" 6666
-$SUDO_WWW $CAKE Admin setSetting "Plugin.Import_timeout" 300
-$SUDO_WWW $CAKE Admin setSetting "Plugin.Import_ocr_enabled" true
-$SUDO_WWW $CAKE Admin setSetting "Plugin.Import_mispjson_enabled" true
-$SUDO_WWW $CAKE Admin setSetting "Plugin.Import_openiocimport_enabled" true
-$SUDO_WWW $CAKE Admin setSetting "Plugin.Import_threatanalyzer_import_enabled" true
-$SUDO_WWW $CAKE Admin setSetting "Plugin.Import_csvimport_enabled" true
+# Import Modules
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Import_services_enable" true 2> /dev/null | true
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Import_services_url" "$MISP_MODULE_SERVICE" 2> /dev/null | true
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Import_services_port" 6666 2> /dev/null | true
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Import_timeout" 300 2> /dev/null | true
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Import_ocr_enabled" true 2> /dev/null | true
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Import_mispjson_enabled" true 2> /dev/null | true
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Import_openiocimport_enabled" true 2> /dev/null | true
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Import_threatanalyzer_import_enabled" true 2> /dev/null | true
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Import_csvimport_enabled" true 2> /dev/null | true
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Import_joe_import_enabled" true 2> /dev/null | true
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Import_cuckooimport_enabled" true 2> /dev/null | true
 
-# Enable Export modules, set better timeout
-$SUDO_WWW $CAKE Admin setSetting "Plugin.Export_services_enable" true
-$SUDO_WWW $CAKE Admin setSetting "Plugin.Export_services_url" "http://$MISP_MODULE_SERVICE"
-$SUDO_WWW $CAKE Admin setSetting "Plugin.Export_services_port" 6666
-$SUDO_WWW $CAKE Admin setSetting "Plugin.Export_timeout" 300
-$SUDO_WWW $CAKE Admin setSetting "Plugin.Export_pdfexport_enabled" true
-$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_services_enable" true
+# Export Modules
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Export_services_enable" true 2> /dev/null | true
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Export_services_url" "$MISP_MODULE_SERVICE" 2> /dev/null | true
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Export_services_port" 6666 2> /dev/null | true
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Export_timeout" 300 2> /dev/null | true
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Export_pdfexport_enabled" true 2> /dev/null | true
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_services_enable" true 2> /dev/null | true
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Export_osqueryexport_enabled" true 2> /dev/null | true
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Enrichment_services_enable" true 2> /dev/null | true
 
-# Config for GPG
-$SUDO_WWW $CAKE Admin setSetting "GnuPG.email" $MISP_ADMIN_EMAIL
-$SUDO_WWW $CAKE Admin setSetting "GnuPG.homedir" /var/www/MISP/.gnupg
-$SUDO_WWW $CAKE Admin setSetting "GnuPG.binary" /usr/bin/gpg
-$SUDO_WWW $CAKE Admin setSetting "GnuPG.email" $MISP_ADMIN_EMAIL
-$SUDO_WWW $CAKE Admin setSetting "GnuPG.password" $PASSPHRASE_GPG
+# Sightings
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Sightings_policy" 2 2> /dev/null | true
+$SUDO_WWW $CAKE Admin setSetting "Plugin.Sightings_sighting_db_enable" 1 2> /dev/null | true
 
 sed -i "s,'host_org_id' => 1,'host_org_id' => 2," /var/www/MISP/app/Config/config.php
 
