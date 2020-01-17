@@ -21,7 +21,7 @@ RUN apt-get install -y mysql-client curl gcc git gnupg-agent make python openssl
 
 RUN locale-gen en_US.UTF-8
 ENV LANG en_US.UTF-8
-RUN add-apt-repository -y ppa:ondrej/php && apt-get update
+#RUN add-apt-repository -y ppa:ondrej/php && apt-get update
 
 # Apache
 RUN apt-get install -y apache2 apache2-doc apache2-utils
@@ -29,7 +29,7 @@ RUN a2dismod status
 RUN a2dissite 000-default
 
 # PHP 7.2
-RUN apt-get install -y libapache2-mod-php php7.2 php7.2-cli php7.2-dev php7.2-json php7.2-mysql php7.2-opcache php7.2-readline php7.2-redis php7.2-xml php7.2-mbstring php-mbstring
+RUN apt-get install -y libapache2-mod-php php7.2 php7.2-cli php7.2-dev php7.2-json php7.2-mysql php7.2-opcache php7.2-readline php7.2-redis php7.2-xml php7.2-mbstring php-mbstring php-gnupg
 RUN apt-get install -y php-pear pkg-config libbson-1.0 libmongoc-1.0-0 php-xml php-dev php-gd
 # install MySQL PDO extension
 RUN apt-get install -y php-mysql
@@ -40,7 +40,7 @@ RUN sed -i "s/memory_limit = 128M/memory_limit = 2048M/" /etc/php/7.2/apache2/ph
 RUN sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 50M/" /etc/php/7.2/apache2/php.ini
 RUN sed -i "s/post_max_size = 8M/post_max_size = 50M/" /etc/php/7.2/apache2/php.ini
 
-RUN apt-get install -y python-dev python-pip libxml2-dev libxslt1-dev zlib1g-dev python-setuptools libfuzzy-dev python-lxml python3-lxml libpq5 libjpeg-dev tesseract-ocr libpoppler-cpp-dev imagemagick libopencv-dev zbar-tools libzbar0 libzbar-dev
+RUN apt-get install -y python-dev python-pip libxml2-dev libxslt1-dev zlib1g-dev python-setuptools libfuzzy-dev python-lxml python3-lxml libpq5 libjpeg-dev
 
 RUN apt-get install -y cron logrotate supervisor syslog-ng-core
 RUN apt-get clean
@@ -143,9 +143,6 @@ RUN rm -rf warninglists && git clone https://github.com/MISP/misp-warninglists.g
 RUN rm -rf taxonomies && git clone https://github.com/MISP/misp-taxonomies.git ./taxonomies
 RUN chown -R www-data:www-data misp-objects misp-galaxy warninglists taxonomies
 
-# Install MISP build requirements
-RUN sudo -E apt-get -y install libpoppler-glib8 libpoppler-dev libpoppler-cpp-dev
-
 # Install MISP Modules
 WORKDIR /opt
 RUN apt-get install -y python3 python3-pip libjpeg-dev
@@ -167,8 +164,8 @@ RUN sed -i 's/async-timeout.*/async-timeout/g' REQUIREMENTS
 RUN sed -i 's/url-normalize.*/url-normalize/g' REQUIREMENTS
 RUN sed -i 's/^\(yarl\)\=.*/\1/g' REQUIREMENTS
 RUN sed -i 's/^\(sigmatools\)\=.*/\1/' REQUIREMENTS
-RUN pip3 install -I -r REQUIREMENTS
-RUN pip3 install -I .
+#RUN pip3 install -I -r REQUIREMENTS
+#RUN pip3 install -I .
 
 # Supervisord Setup
 RUN echo '[supervisord]' >> /etc/supervisor/conf.d/supervisord.conf

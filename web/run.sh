@@ -212,6 +212,22 @@ $SUDO_WWW $CAKE Admin setSetting "GnuPG.password" $PASSPHRASE_GPG
 
 sed -i "s,'host_org_id' => 1,'host_org_id' => 2," /var/www/MISP/app/Config/config.php
 
+# Configure POSTFIX
+sudo postconf -e "relayhost = [email-smtp.ca-central-1.amazonaws.com]:587" \
+"smtp_sasl_auth_enable = yes" \
+"smtp_sasl_security_options = noanonymous" \
+"smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd" \
+"smtp_use_tls = yes" \
+"smtp_tls_security_level = encrypt" \
+"smtp_tls_note_starttls_offer = yes"
+
+echo "[email-smtp.us-east-1.amazonaws.com]:587 $SMTP_USER:$SMTP_PASSWORD" > /etc/postfix/sasl_passwd
+sudo postmap hash:/etc/postfix/sasl_passwd
+sudo chown root:root /etc/postfix/sasl_passwd /etc/postfix/sasl_passwd.db
+sudo chmod 0600 /etc/postfix/sasl_passwd /etc/postfix/sasl_passwd.db
+sudo postconf -e 'smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt'
+sudo postfix start; sudo postfix reload
+
 # Start supervisord
 echo "Starting supervisord"
 cd /
