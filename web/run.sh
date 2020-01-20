@@ -271,14 +271,30 @@ sudo postconf -e "relayhost = [email-smtp.us-east-1.amazonaws.com]:587" \
 "smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd" \
 "smtp_use_tls = yes" \
 "smtp_tls_security_level = encrypt" \
-"smtp_tls_note_starttls_offer = yes"
+"smtp_tls_note_starttls_offer = yes" \
+"inet_interfaces = all" \
+"myorigin = /etc/mailname"
+
+echo "ubisoft.com" > /etc/mailname
 
 echo "[email-smtp.us-east-1.amazonaws.com]:587 $SMTP_USER:$SMTP_PASSWORD" > /etc/postfix/sasl_passwd
 sudo postmap hash:/etc/postfix/sasl_passwd
 sudo chown root:root /etc/postfix/sasl_passwd /etc/postfix/sasl_passwd.db
 sudo chmod 0600 /etc/postfix/sasl_passwd /etc/postfix/sasl_passwd.db
 sudo postconf -e 'smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt'
-sudo postfix start; sudo postfix reload
+
+sed -i 's/inet_protocols = all/inet_protocols = ipv4/g' /etc/postfix/main.cf
+sed -i 's/inet_interfaces = all/inet_interfaces = loopback-only/g' /etc/postfix/main.cf
+
+# Set canonical to only send email as MISP_ADMIN_EMAIL
+echo "canonical_maps = regexp:/etc/postfix/canonical" >> /etc/postfix/main.cf
+echo "// $MISP_ADMIN_EMAIL" > /etc/postfix/canonical
+
+# Fix DNS issue
+cp /etc/resolv.conf /var/spool/postfix/etc/resolv.conf
+
+
+sudo postfix stop; sudo postfix start; sudo postfix reload
 
 # Start supervisord
 echo "Starting supervisord"
