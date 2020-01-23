@@ -33,13 +33,11 @@ RUN sed -i \
         -e "s/post_max_size = 8M/post_max_size = 50M/" \
         /etc/php/7.2/apache2/php.ini
 
-RUN apt-get install -y python-dev python-pip libxml2-dev libxslt1-dev \
-        zlib1g-dev python-setuptools libfuzzy-dev python-lxml python3-lxml && \
+RUN apt-get install -y python3-dev python3-pip python3-setuptools \
+        python3-lxml libjpeg-dev \
+        libxml2-dev libxslt1-dev zlib1g-dev libfuzzy-dev && \
     apt-get install -y cron logrotate supervisor syslog-ng-core && \
     apt-get clean
-
-# update setuptools because otherwise you'' get python errors
-RUN pip install --upgrade setuptools
 
 WORKDIR /var/www
 RUN chown www-data:www-data /var/www
@@ -51,20 +49,13 @@ RUN git checkout tags/$(git describe --tags `git rev-list --tags --max-count=1`)
     git submodule update --init --recursive && \
     git submodule foreach --recursive git config core.filemode false
 
-WORKDIR /var/www/MISP/app/files/scripts
-RUN git clone https://github.com/CybOXProject/python-cybox.git && \
-    git clone https://github.com/STIXProject/python-stix.git
-
-WORKDIR /var/www/MISP/app/files/scripts/python-cybox
-RUN git checkout v2.1.0.12
 USER root
-RUN python setup.py install
-
-USER www-data
-WORKDIR /var/www/MISP/app/files/scripts/python-stix
-RUN git checkout v1.1.1.4
-USER root
-RUN python setup.py install
+RUN pip3 install git+https://github.com/STIXProject/python-stix.git \
+                 git+https://github.com/CybOXProject/python-cybox.git \
+                 git+https://github.com/CybOXProject/mixbox.git \
+                 git+https://github.com/MAECProject/python-maec.git \
+                 /var/www/MISP/cti-python-stix2 \
+                 plyara
 
 USER www-data
 WORKDIR /var/www/MISP
@@ -141,23 +132,8 @@ RUN sudo -E apt-get -y install libpoppler73 libpoppler-dev libpoppler-cpp-dev
 
 # Install MISP Modules
 WORKDIR /opt
-RUN apt-get install -y python3 python3-pip libjpeg-dev
-# PIP3 fix
-RUN pip3 install --upgrade pip
-# END FIX
 RUN git clone https://github.com/MISP/misp-modules.git
-WORKDIR /opt/misp-modules
-RUN pip3 install --upgrade pip && \
-    cat REQUIREMENTS | sed 's/aiohttp==3.4.4/aiohttp/g' > REQUIREMENTS && \
-    pip3 install --upgrade --ignore-installed urllib3 && \
-    pip3 install --upgrade --ignore-installed requests
-
-RUN sed -i 's/aiohttp.*/aiohttp/g' REQUIREMENTS && \
-    sed -i 's/functools.*//g' REQUIREMENTS && \
-    sed -i 's/async-timeout.*/async-timeout/g' REQUIREMENTS && \
-    sed -i 's/url-normalize.*/url-normalize/g' REQUIREMENTS && \
-    sed -i 's/^\(yarl\)\=.*/\1/g' REQUIREMENTS && \
-    sed -i 's/^\(sigmatools\)\=.*/\1/' REQUIREMENTS && \
+RUN cd misp-modules && \
     pip3 install -I -r REQUIREMENTS && \
     pip3 install -I . && \
     echo "sudo -u www-data misp-modules -s -l 127.0.0.1 &" >>/etc/rc.local
