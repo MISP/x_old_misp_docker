@@ -137,6 +137,13 @@ __WELCOME__
         rm -f /.firstboot.tmp
 fi
 
+# Make MISP live - this isn't ideal, as it means taking an instance
+# non-live will make it live again if the container restarts.  That seems
+# better than the default which is that MISP is non-live on container restart.
+# Ideally live/non-live would be persisted in the database.
+/var/www/MISP/app/Console/cake live 1
+chown www-data:www-data /var/www/MISP/app/Config/config.php*
+
 # Start supervisord
 echo "Starting supervisord"
 cd /
