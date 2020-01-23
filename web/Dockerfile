@@ -13,7 +13,6 @@ RUN apt-get update && \
 
 RUN locale-gen en_US.UTF-8
 ENV LANG en_US.UTF-8
-RUN add-apt-repository -y ppa:ondrej/php && apt-get update
 
 # Apache
 RUN apt-get install -y apache2 apache2-doc apache2-utils && \
@@ -21,22 +20,17 @@ RUN apt-get install -y apache2 apache2-doc apache2-utils && \
     a2dissite 000-default
 
 # PHP 7.2 and install MySQL PDO extension
-RUN apt-get install -y libapache2-mod-php7.2 php7.2 php7.2-cli php7.2-dev \
-        php7.2-json php7.2-mysql php7.2-opcache php7.2-readline php7.2-redis \
-	php7.2-xml && \
-    apt-get install -y php-pear pkg-config libbson-1.0 libmongoc-1.0-0 \
-        php7.2-xml php7.2-dev php7.2-gd && \
-    apt-get install -y php7.2-mysql && \
-    apt-get install -y php7.2-mbstring
+RUN apt-get install -y libapache2-mod-php php php-dev php-json \
+        php-mysql php-redis php-xml php-mbstring \
+        php-gd php-pear php-opcache \
+        pkg-config libbson-1.0 libmongoc-1.0-0
 
 # Fix php.ini with recommended settings
-RUN sed -i "s/max_execution_time = 30/max_execution_time = 300/" \
-        /etc/php/7.2/apache2/php.ini && \
-    sed -i "s/memory_limit = 128M/memory_limit = 2048M/" \
-        /etc/php/7.2/apache2/php.ini && \
-    sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 50M/" \
-        /etc/php/7.2/apache2/php.ini && \
-    sed -i "s/post_max_size = 8M/post_max_size = 50M/" \
+RUN sed -i \
+        -e "s/max_execution_time = 30/max_execution_time = 300/" \
+        -e "s/memory_limit = 128M/memory_limit = 2048M/" \
+        -e "s/upload_max_filesize = 2M/upload_max_filesize = 50M/" \
+        -e "s/post_max_size = 8M/post_max_size = 50M/" \
         /etc/php/7.2/apache2/php.ini
 
 RUN apt-get install -y python-dev python-pip libxml2-dev libxslt1-dev \
