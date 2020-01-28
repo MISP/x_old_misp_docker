@@ -98,6 +98,10 @@ RUN echo "postfix postfix/main_mailer_type string Local only" \
 RUN sed -i 's/^\(daemonize\s*\)yes\s*$/\1no/g' /etc/redis/redis.conf
 RUN sed -i 's/^\(bind\s*\)127.0.0.1 ::1\s*$/\1127.0.0.1/g' /etc/redis/redis.conf
 
+# Add a healthcheck endpoint
+COPY healthcheck.patch healthcheck.patch
+RUN patch /var/www/MISP/INSTALL/apache.misp.ubuntu < healthcheck.patch
+
 # Apache Setup
 RUN cp /var/www/MISP/INSTALL/apache.misp.ubuntu /etc/apache2/sites-available/misp.conf && \
     a2dissite 000-default && \
@@ -177,7 +181,6 @@ RUN sed -i -E 's/^(\s*)system\(\);/\1unix-stream("\/dev\/log");/' /etc/syslog-ng
 # Trigger to perform first boot operations
 ADD run.sh /run.sh
 RUN chmod 0755 /run.sh && touch /.firstboot.tmp
-
 
 # Make a backup of /var/www/MISP to restore it to the local moint point at first boot
 WORKDIR /var/www/MISP

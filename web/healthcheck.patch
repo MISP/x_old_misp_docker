@@ -1,0 +1,16 @@
+diff --git a/INSTALL/apache.misp.ubuntu b/INSTALL/apache.misp.ubuntu
+index 6581951ea..17ed67982 100644
+--- a/INSTALL/apache.misp.ubuntu
++++ b/INSTALL/apache.misp.ubuntu
+@@ -2,6 +2,11 @@
+     ServerAdmin me@me.local
+     ServerName misp.local
+     DocumentRoot /var/www/MISP/app/webroot
++    <Location "/healthcheck">
++        ErrorDocument 200 "ok"
++        RewriteEngine On
++        RewriteRule "/healthcheck" - [R=200]
++    </Location>
+     <Directory /var/www/MISP/app/webroot>
+         Options -Indexes
+         AllowOverride all
