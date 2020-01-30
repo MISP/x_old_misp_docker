@@ -7,6 +7,7 @@
 # 2017/06/02 - Updated
 # 2018/04/04 - Added objects templates
 #
+#
 
 # We are based on Ubuntu:latest
 FROM ubuntu:bionic
