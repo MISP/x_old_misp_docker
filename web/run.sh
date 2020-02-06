@@ -60,7 +60,7 @@ if [ -r /.firstboot.tmp ]; then
                 echo "MYSQL_PASSWORD is set to '$MYSQL_PASSWORD'"
         fi
 
-        ret=`echo 'SHOW TABLES;' | mysql -u $MYSQL_USER --password="$MYSQL_PASSWORD" -h $MYSQL_HOST -P 3306 $MYSQL_DATABASE # 2>&1`
+        ret=`echo 'SHOW TABLES;' | mysql -u $MYSQL_USER --password="$MYSQL_PASSWORD" -h $MYSQL_HOST -P 3306 # 2>&1`
         if [ $? -eq 0 ]; then
                 echo "Connected to database successfully!"
                 found=0
