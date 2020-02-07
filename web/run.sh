@@ -61,9 +61,9 @@ if [ -r /.firstboot.tmp ]; then
         fi
 	
 	dbExists=`echo 'SHOW DATABASES;' | mysql -u $MYSQL_USER --password="$MYSQL_PASSWORD" -h $MYSQL_HOST -P 3306`
-	if [[ $dbExists != *$MYSQL_DATABASE* ]]
+	if [[ $dbExists != *$MYSQL_DATABASE* ]]; then
 	        echo "Database misp doesn't exist, creating database ..."
-		`echo 'CREATE DATABASE '$MYSQL_DATABASE';' | mysql -u $MYSQL_USER --password="$MYSQL_PASSWORD" -h $MYSQL_HOST -P 3306`
+		echo 'CREATE DATABASE '$MYSQL_DATABASE';' | mysql -u $MYSQL_USER --password="$MYSQL_PASSWORD" -h $MYSQL_HOST -P 3306
 	fi
         ret=`echo 'SHOW TABLES;' | mysql -u $MYSQL_USER --password="$MYSQL_PASSWORD" -h $MYSQL_HOST -P 3306 $MYSQL_DATABASE # 2>&1`
         if [ $? -eq 0 ]; then
