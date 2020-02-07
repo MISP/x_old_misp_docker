@@ -59,8 +59,13 @@ if [ -r /.firstboot.tmp ]; then
         else
                 echo "MYSQL_PASSWORD is set to '$MYSQL_PASSWORD'"
         fi
-
-        ret=`echo 'SHOW TABLES;' | mysql -u $MYSQL_USER --password="$MYSQL_PASSWORD" -h $MYSQL_HOST -P 3306 # 2>&1`
+	
+	dbExists=`echo 'SHOW DATABASES;' | mysql -u $MYSQL_USER --password="$MYSQL_PASSWORD" -h $MYSQL_HOST -P 3306`
+	if [[ $dbExists != *$MYSQL_DATABASE* ]]
+	        echo "Database misp doesn't exist, creating database ..."
+		`echo 'CREATE DATABASE '$MYSQL_DATABASE';' | mysql -u $MYSQL_USER --password="$MYSQL_PASSWORD" -h $MYSQL_HOST -P 3306`
+	fi
+        ret=`echo 'SHOW TABLES;' | mysql -u $MYSQL_USER --password="$MYSQL_PASSWORD" -h $MYSQL_HOST -P 3306 $MYSQL_DATABASE # 2>&1`
         if [ $? -eq 0 ]; then
                 echo "Connected to database successfully!"
                 found=0
