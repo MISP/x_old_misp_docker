@@ -191,10 +191,6 @@ RUN chmod 0755 /run.sh && touch /.firstboot.tmp
 WORKDIR /var/www/MISP
 RUN tar czpf /root/MISP.tgz .
 
-echo "root:Docker!" | chpasswd 
-
-
-
 VOLUME /var/www/MISP
 EXPOSE 80 2222
 
