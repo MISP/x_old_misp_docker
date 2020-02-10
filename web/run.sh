@@ -10,11 +10,13 @@
 
 set -e
 
+/usr/sbin/sshd
+
 if [ -r /.firstboot.tmp ]; then
         echo "Container started for the fist time. Setup might time a few minutes. Please wait..."
         echo "(Details are logged in /tmp/install.log)"
         export DEBIAN_FRONTEND=noninteractive
-
+	
         # If the user uses a mount point restore our files
         if [ ! -d /var/www/MISP/app ]; then
                 echo "Restoring MISP files..."
