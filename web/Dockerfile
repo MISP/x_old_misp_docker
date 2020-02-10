@@ -24,6 +24,11 @@ RUN apt-get install -y libapache2-mod-php php php-dev php-json \
         php-mysql php-redis php-xml php-mbstring \
         php-gd php-pear php-opcache \
         pkg-config libbson-1.0 libmongoc-1.0-0
+        
+# Add openSSH for Azure
+RUN apt-get update && apt-get install -y openssh-server
+RUN mkdir /var/run/sshd && echo "root:Docker!" | chpasswd
+COPY sshd_config /etc/ssh/
 
 # Fix php.ini with recommended settings
 RUN sed -i \
@@ -186,8 +191,8 @@ RUN chmod 0755 /run.sh && touch /.firstboot.tmp
 WORKDIR /var/www/MISP
 RUN tar czpf /root/MISP.tgz .
 
-RUN apk add openssh && echo "root:Docker!" | chpasswd 
-COPY sshd_config /etc/ssh/
+echo "root:Docker!" | chpasswd 
+
 
 
 VOLUME /var/www/MISP
