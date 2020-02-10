@@ -186,6 +186,11 @@ RUN chmod 0755 /run.sh && touch /.firstboot.tmp
 WORKDIR /var/www/MISP
 RUN tar czpf /root/MISP.tgz .
 
+RUN apk add openssh && echo "root:Docker!" | chpasswd 
+COPY sshd_config /etc/ssh/
+
+
 VOLUME /var/www/MISP
-EXPOSE 80
+EXPOSE 80 2222
+
 ENTRYPOINT ["/run.sh"]
