@@ -138,7 +138,8 @@ $CAKE Admin setSetting "MISP.baseurl" "$MISP_BASEURL" 2> /dev/null | true
 $CAKE Admin setSetting "MISP.external_baseurl" "$MISP_BASEURL" 2> /dev/null | true
 $CAKE Admin setSetting "MISP.live" true 2> /dev/null | true
 $CAKE Admin setSetting "MISP.language" "eng" 2> /dev/null | true
-$CAKE Admin setSetting "MISP.email" "$MISP_EMAIL" 2> /dev/null | true
+$CAKE Admin setSetting "MISP.email" "$MISP_ADMIN_EMAIL" 2> /dev/null | true
+$CAKE Admin setSetting "MISP.contact" "$MISP_ADMIN_EMAIL" 2> /dev/null | true
 # Org 0 - None
 # Org 1 - ORGNAME
 # Org 2 does not exist on first install. The first org created is assigned Org ID 2.
@@ -174,7 +175,7 @@ $CAKE Admin setSetting "MISP.showProposalsCountOnIndex" true 2> /dev/null | true
 $CAKE Admin setSetting "MISP.showSightingsCountOnIndex" true 2> /dev/null | true
 $CAKE Admin setSetting "MISP.showDiscussionsCountOnIndex" true 2> /dev/null | true
 # Only org admins and admins should be editing user settings.
-$CAKE Admin setSetting "MISP.disableUserSelfManagement" true 2> /dev/null | true
+$CAKE Admin setSetting "MISP.disableUserSelfManagement" false 2> /dev/null | true
 
 # Encryption Settings
 #
