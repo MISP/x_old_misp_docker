@@ -133,12 +133,23 @@ RUN rm -rf misp-objects && git clone https://github.com/MISP/misp-objects.git &&
     chown -R www-data:www-data misp-objects misp-galaxy warninglists taxonomies
 
 # Install MISP build requirements
-RUN sudo -E apt-get -y install libpoppler73 libpoppler-dev libpoppler-cpp-dev
+RUN sudo -E apt-get -y install libpoppler73 libpoppler-dev libpoppler-cpp-dev zbar-tools libsm6 libxrender1 cmake
+
+# Install faup
+WORKDIR /srv
+RUN git clone https://github.com/stricaud/faup.git
+WORKDIR /srv/faup/build
+RUN cmake .. && make && \
+    make install && \
+    ldconfig
+WORKDIR /srv/faup/src/lib/bindings/python
+RUN pip3 install -I .
 
 # Install MISP Modules
 WORKDIR /opt
 RUN git clone https://github.com/MISP/misp-modules.git
 RUN cd misp-modules && \
+    touch ./misp_modules/modules/expansion/_ransomcoindb/__init__.py && \
     pip3 install -I -r REQUIREMENTS && \
     pip3 install -I . && \
     echo "sudo -u www-data misp-modules -s -l 127.0.0.1 &" >>/etc/rc.local
