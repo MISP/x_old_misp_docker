@@ -1,18 +1,10 @@
 version: '2'
 
 services:
-  proxy:
-    build:
-      context: proxy
-    container_name: proxy
-    restart: unless-stopped
-    image: misp-proxy:latest
-    ports:
-      - 80:80
-      - 4443:443
-
   web:
     build: web
+    depends_on:
+      - db
     container_name: misp_web
     image: misp:latest
     restart: unless-stopped
@@ -42,3 +34,17 @@ services:
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
 
+  nginx:  
+    container_name: nginx
+    image: nginx:stable
+    restart: unless-stopped
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    depends_on:
+      - web
+    environment:
+      - MISP_BASEURL=${MISP_BASEURL}
+    command: /bin/bash -c "envsubst '$$MISP_BASEURL' < /etc/nginx/conf.d/misp.template > /etc/nginx/conf.d/misp.conf && nginx -g 'daemon off;'" 
