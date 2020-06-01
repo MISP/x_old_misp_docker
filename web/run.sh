@@ -144,6 +144,9 @@ __WELCOME__
         rm -f /.firstboot.tmp
 fi
 
+else
+	git pull /var/www/MISP
+
 # Make MISP live - this isn't ideal, as it means taking an instance
 # non-live will make it live again if the container restarts.  That seems
 # better than the default which is that MISP is non-live on container restart.
