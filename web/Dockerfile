@@ -18,7 +18,7 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update && apt-get dist-upgrade -y && apt-get autoremove -y && apt-get clean
 RUN apt-get install -y software-properties-common
 RUN apt-get install -y postfix
-RUN apt-get install -y mysql-client curl gcc git gnupg-agent make python openssl redis-server sudo vim zip locales
+RUN apt-get install -y mysql-client curl gcc git gnupg-agent make python openssl redis-server sudo zip locales vim
 
 RUN locale-gen en_US.UTF-8
 ENV LANG en_US.UTF-8
