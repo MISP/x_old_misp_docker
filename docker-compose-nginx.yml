@@ -9,7 +9,7 @@ services:
     image: misp-proxy:latest
     ports:
       - 80:80
-      - 4443:443
+      - 443:443
 
   web:
     build: web
