@@ -6,14 +6,14 @@
 # 2017/05/17 - Created
 # 2017/05/31 - Fixed small errors
 # 2019/10/17 - Use built-in mysql docker DB creation and use std env names (dafal)
-#
+# 2020/07/05 - Update MISP when it's not the first start
 
 set -e
 
 /usr/sbin/sshd
 
 if [ -r /.firstboot.tmp ]; then
-        echo "Container started for the fist time. Setup might time a few minutes. Please wait..."
+        echo "Container started for the first time. Setup might time a few minutes. Please wait..."
         echo "(Details are logged in /tmp/install.log)"
         export DEBIAN_FRONTEND=noninteractive
 	
@@ -142,10 +142,9 @@ Don't forget:
 
 __WELCOME__
         rm -f /.firstboot.tmp
-fi
-
 else
 	git pull /var/www/MISP
+fi
 
 # Make MISP live - this isn't ideal, as it means taking an instance
 # non-live will make it live again if the container restarts.  That seems
