@@ -11,6 +11,6 @@ RUN sed -i 's/checkInstaller$/#checkInstaller/' /tmp/INSTALL.sh
 RUN bash /tmp/INSTALL.sh -c
 
 VOLUME /var/www/MISP
-EXPOSE 80 2222
+EXPOSE 80 443
 
 ENTRYPOINT ["/run.sh"]
