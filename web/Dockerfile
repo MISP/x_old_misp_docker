@@ -4,7 +4,7 @@ FROM ubuntu:focal
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt update -y && apt install wget sudo -y
 # This will install MISP Core
-RUN wget -O /tmp/INSTALL.sh https://raw.githubusercontent.com/MISP/MISP/2.4/INSTALL/INSTALL.sh
+RUN wget -O /tmp/INSTALL.sh https://raw.githubusercontent.com/stevengoossensB/MISP/2.4/INSTALL/INSTALL.sh
 RUN sed -i 's/> \/dev\/tty//' /tmp/INSTALL.sh
 RUN sed -i 's/> \/dev\/null//' /tmp/INSTALL.sh 
 RUN sed -i 's/checkInstaller$/#checkInstaller/' /tmp/INSTALL.sh
