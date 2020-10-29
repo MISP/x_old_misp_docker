@@ -50,6 +50,7 @@ RUN git checkout tags/$(git describe --tags `git rev-list --tags --max-count=1`)
     git submodule foreach --recursive git config core.filemode false
 
 USER root
+RUN pip3 install --upgrade pip
 RUN pip3 install git+https://github.com/STIXProject/python-stix.git \
                  git+https://github.com/CybOXProject/python-cybox.git \
                  git+https://github.com/CybOXProject/mixbox.git \
