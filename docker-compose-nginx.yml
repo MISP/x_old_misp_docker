@@ -14,7 +14,7 @@ services:
   web:
     build: web
     container_name: misp_web
-    image: stevengoossens/misp:latest
+    image: misp:latest
     restart: unless-stopped
     volumes:
       - /dev/urandom:/dev/random
