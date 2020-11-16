@@ -1,2 +1,4 @@
 .env
 data
+proxy/ssl/misp.crt
+proxy/ssl/misp.key
