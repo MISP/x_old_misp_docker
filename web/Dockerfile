@@ -50,7 +50,6 @@ RUN git checkout tags/$(git describe --tags `git rev-list --tags --max-count=1`)
     git submodule foreach --recursive git config core.filemode false
 
 USER root
-RUN pip3 install --upgrade pip
 RUN pip3 install git+https://github.com/STIXProject/python-stix.git \
                  git+https://github.com/CybOXProject/python-cybox.git \
                  git+https://github.com/CybOXProject/mixbox.git \
@@ -140,6 +139,9 @@ RUN sudo -E apt-get -y install libpoppler73 libpoppler-dev libpoppler-cpp-dev
 WORKDIR /opt
 RUN git clone https://github.com/MISP/misp-modules.git
 RUN cd misp-modules && \
+    pip3 install --upgrade pip setuptools wheel && \
+    pip3 install scikit-build && \    
+    pip3 install opencv-python && \ 
     pip3 install -I -r REQUIREMENTS && \
     pip3 install -I . && \
     echo "sudo -u www-data misp-modules -s -l 127.0.0.1 &" >>/etc/rc.local
