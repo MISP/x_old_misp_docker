@@ -50,3 +50,18 @@ $ docker-compose up
 or
 $ docker-compose -f docker-compose-nginx.yml up
 ```
+
+# Optional NGINX config - SSL certificates
+
+You can create the certificates manually if they are not automatically created.
+
+```
+openssl req -new -nodes -x509 -subj "/C=BE/ST=Brussels/L=Brussels/O=CTI/CN=localhost" -days 3650 -newkey rsa:4096 -keyout proxy/ssl/misp.key -out proxy/ssl/misp.crt
+```
+
+Then rebuild the proxy container and restart al the containers.
+
+```
+docker-compose -f docker-compose-nginx.yml build --no-cache proxy
+docker-compose -f docker-compose-nginx.yml up
+```
