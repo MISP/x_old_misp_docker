@@ -137,7 +137,7 @@ RUN sudo -E apt-get -y install libpoppler73 libpoppler-dev libpoppler-cpp-dev
 
 # Install MISP Modules
 WORKDIR /opt
-RUN git clone https://github.com/MISP/misp-modules.git
+RUN git clone --branch v2.4.134 https://github.com/MISP/misp-modules.git
 RUN cd misp-modules && \
     pip3 install --upgrade pip setuptools wheel && \
     pip3 install scikit-build && \    
