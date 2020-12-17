@@ -123,9 +123,9 @@ RUN rm -rf misp-objects && git clone https://github.com/MISP/misp-objects.git &&
 # Install MISP Modules
 WORKDIR /opt
 RUN git clone --branch v2.4.134 https://github.com/MISP/misp-modules.git
+WORKDIR /opt/misp-modules/
 # hadolint ignore=DL3013
-RUN cd misp-modules && \
-    python3 -m pip install --no-cache-dir --upgrade pip setuptools wheel && \
+RUN python3 -m pip install --no-cache-dir --upgrade pip setuptools wheel && \
     python3 -m pip install --no-cache-dir scikit-build && \    
     python3 -m pip install --no-cache-dir opencv-python && \ 
     python3 -m pip install --no-cache-dir -I -r REQUIREMENTS && \
