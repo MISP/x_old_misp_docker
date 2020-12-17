@@ -98,12 +98,15 @@ RUN cp /var/www/MISP/INSTALL/apache.misp.ubuntu /etc/apache2/sites-available/mis
     a2enmod rewrite && \
     a2enmod headers
 
+USER www-data
 # MISP base configuration
-RUN sudo -u www-data cp -a /var/www/MISP/app/Config/bootstrap.default.php /var/www/MISP/app/Config/bootstrap.php && \
-    sudo -u www-data cp -a /var/www/MISP/app/Config/database.default.php /var/www/MISP/app/Config/database.php && \
-    sudo -u www-data cp -a /var/www/MISP/app/Config/core.default.php /var/www/MISP/app/Config/core.php && \
-    sudo -u www-data cp -a /var/www/MISP/app/Config/config.default.php /var/www/MISP/app/Config/config.php && \
-    chown -R www-data:www-data /var/www/MISP/app/Config && \
+RUN cp -a /var/www/MISP/app/Config/bootstrap.default.php /var/www/MISP/app/Config/bootstrap.php && \
+    cp -a /var/www/MISP/app/Config/database.default.php /var/www/MISP/app/Config/database.php && \
+    cp -a /var/www/MISP/app/Config/core.default.php /var/www/MISP/app/Config/core.php && \
+    cp -a /var/www/MISP/app/Config/config.default.php /var/www/MISP/app/Config/config.php
+
+USER root
+RUN chown -R www-data:www-data /var/www/MISP/app/Config && \
     chmod -R 750 /var/www/MISP/app/Config
 
 # Replace the default salt
