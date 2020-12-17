@@ -50,6 +50,7 @@ RUN git submodule init && git submodule update
 WORKDIR /var/www/MISP/app
 
 # FIX COMPOSER
+# hadolint ignore=SC2116
 RUN curl --fail --location -o composer-setup.php https://getcomposer.org/installer && \
     EXPECTED_SIGNATURE="$(curl https://composer.github.io/installer.sig)"; php -r "if (hash_file('sha384', 'composer-setup.php') == '$(echo $EXPECTED_SIGNATURE)' ) { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" && \
     php composer-setup.php && \
