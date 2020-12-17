@@ -30,7 +30,7 @@ RUN chown www-data:www-data /var/www
 USER www-data
 RUN git clone https://github.com/MISP/MISP.git
 WORKDIR /var/www/MISP
-RUN git checkout tags/$(git describe --tags `git rev-list --tags --max-count=1`) && \
+RUN git checkout tags/$(git describe --tags $(git rev-list --tags --max-count=1)) && \
     git config core.filemode false && \
     git submodule update --init --recursive && \
     git submodule foreach --recursive git config core.filemode false
@@ -105,7 +105,7 @@ RUN sudo -u www-data cp -a /var/www/MISP/app/Config/bootstrap.default.php /var/w
     chmod -R 750 /var/www/MISP/app/Config
 
 # Replace the default salt
-RUN sed -i -E "s/'salt'\s=>\s'(\S+)'/'salt' => '`openssl rand -base64 32|tr "/" "-"`'/" /var/www/MISP/app/Config/config.php
+RUN sed -i -E "s/'salt'\s=>\s'(\S+)'/'salt' => '$(openssl rand -base64 32|tr "/" "-")'/" /var/www/MISP/app/Config/config.php
 
 # Enable workers at boot time
 RUN chmod a+x /var/www/MISP/app/Console/worker/start.sh && \
