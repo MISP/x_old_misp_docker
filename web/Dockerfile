@@ -2,14 +2,14 @@ FROM ubuntu:bionic
 
 # Install core components
 ENV DEBIAN_FRONTEND noninteractive
-
-# hadolint ignore=DL3008
-RUN apt update && \
-    apt dist-upgrade -y && \
-    apt autoremove -y && \
-    apt install -y --no-install-recommends software-properties-common postfix mysql-client curl gcc git gnupg-agent make python openssl redis-server sudo vim zip locales apache2 apache2-doc apache2-utils libapache2-mod-php php php-dev php-json php-mysql php-redis php-xml php-mbstring php-gd php-pear php-opcache pkg-config libbson-1.0 libmongoc-1.0-0 libjpeg-dev libxml2-dev libxslt1-dev zlib1g-dev libfuzzy-dev cron logrotate supervisor syslog-ng-core libpoppler73 libpoppler-dev libpoppler-cpp-dev && \
-    apt install -y python3-dev python3-pip python3-setuptools python3-lxml && \
-    apt clean && \
+# Note: The install list is alphabetized, for if a package needs to be checked for or replaced
+# hadolint ignore=DL3008,DL3015
+RUN apt-get update && \
+    apt-get dist-upgrade -y && \
+    apt-get autoremove -y && \
+    apt-get install -y --no-install-recommends apache2 apache2-doc apache2-utils cron curl gcc git gnupg-agent locales libapache2-mod-php libbson-1.0 libmongoc-1.0-0 libjpeg-dev libxml2-dev libxslt1-dev libfuzzy-dev libpoppler73 libpoppler-dev libpoppler-cpp-dev logrotate mysql-client make openssl php php-dev php-json php-mysql php-redis php-xml php-mbstring php-gd php-pear php-opcache pkg-config postfix python redis-server software-properties-common sudo supervisor syslog-ng-core vim zlib1g-dev zip && \
+    apt-get install -y python3-dev python3-lxml python3-pip python3-setuptools && \
+    apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
     a2dismod status && \
     a2dissite 000-default
