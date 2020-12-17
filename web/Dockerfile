@@ -1,29 +1,28 @@
-
 FROM ubuntu:bionic
 
 # Install core components
 ENV DEBIAN_FRONTEND noninteractive
 
+# hadolint ignore=DL3008
 RUN apt-get update && \
-    apt-get dist-upgrade -y && apt-get autoremove -y && apt-get clean && \
-    apt-get install -y software-properties-common && \
-    apt-get install -y postfix && \
-    apt-get install -y mysql-client curl gcc git gnupg-agent \
-        make python openssl redis-server sudo vim zip locales
+    apt-get dist-upgrade -y && \
+    apt-get autoremove -y && \
+    apt-get install --no-install-recommends -y software-properties-common postfix mysql-client curl gcc git gnupg-agent make python openssl redis-server sudo vim zip locales && \
+    apt-get clean #&& \
+
 
 RUN locale-gen en_US.UTF-8
 ENV LANG en_US.UTF-8
 
 # Apache
-RUN apt-get install -y apache2 apache2-doc apache2-utils && \
+# hadolint ignore=DL3008
+RUN apt-get install -y --no-install-recommends apache2 apache2-doc apache2-utils && \
     a2dismod status && \
     a2dissite 000-default
 
 # PHP 7.2 and install MySQL PDO extension
-RUN apt-get install -y libapache2-mod-php php php-dev php-json \
-        php-mysql php-redis php-xml php-mbstring \
-        php-gd php-pear php-opcache \
-        pkg-config libbson-1.0 libmongoc-1.0-0
+# hadolint ignore=DL3008
+RUN apt-get install -y --no-install-recommends libapache2-mod-php php php-dev php-json php-mysql php-redis php-xml php-mbstring php-gd php-pear php-opcache pkg-config libbson-1.0 libmongoc-1.0-0
 
 # Fix php.ini with recommended settings
 RUN sed -i \
@@ -33,10 +32,10 @@ RUN sed -i \
         -e "s/post_max_size = 8M/post_max_size = 50M/" \
         /etc/php/7.2/apache2/php.ini
 
-RUN apt-get install -y python3-dev python3-pip python3-setuptools \
+# hadolint ignore=DL3008
+RUN apt-get install -y --no-install-recommends python3-dev python3-pip python3-setuptools \
         python3-lxml libjpeg-dev \
-        libxml2-dev libxslt1-dev zlib1g-dev libfuzzy-dev && \
-    apt-get install -y cron logrotate supervisor syslog-ng-core && \
+        libxml2-dev libxslt1-dev zlib1g-dev libfuzzy-dev cron logrotate supervisor syslog-ng-core && \
     apt-get clean
 
 WORKDIR /var/www
@@ -50,6 +49,7 @@ RUN git checkout tags/$(git describe --tags `git rev-list --tags --max-count=1`)
     git submodule foreach --recursive git config core.filemode false
 
 USER root
+# hadolint ignore=DL3013
 RUN pip3 install git+https://github.com/STIXProject/python-stix.git \
                  git+https://github.com/CybOXProject/python-cybox.git \
                  git+https://github.com/CybOXProject/mixbox.git \
@@ -133,11 +133,14 @@ RUN rm -rf misp-objects && git clone https://github.com/MISP/misp-objects.git &&
     chown -R www-data:www-data misp-objects misp-galaxy warninglists taxonomies
 
 # Install MISP build requirements
-RUN sudo -E apt-get -y install libpoppler73 libpoppler-dev libpoppler-cpp-dev
+# hadolint ignore=DL3008
+RUN sudo -E apt-get -y install --no-install-recommends libpoppler73 libpoppler-dev libpoppler-cpp-dev && \
+    rm -rf /var/lib/apt/lists/*
 
 # Install MISP Modules
 WORKDIR /opt
 RUN git clone --branch v2.4.134 https://github.com/MISP/misp-modules.git
+# hadolint ignore=DL3013
 RUN cd misp-modules && \
     pip3 install --upgrade pip setuptools wheel && \
     pip3 install scikit-build && \    
