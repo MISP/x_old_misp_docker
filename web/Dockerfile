@@ -30,7 +30,7 @@ RUN chown www-data:www-data /var/www
 USER www-data
 RUN git clone https://github.com/MISP/MISP.git
 WORKDIR /var/www/MISP
-RUN git checkout tags/$(git describe --tags $(git rev-list --tags --max-count=1)) && \
+RUN git checkout tags/"$(git describe --tags "$(git rev-list --tags --max-count=1)")" && \
     git config core.filemode false && \
     git submodule update --init --recursive && \
     git submodule foreach --recursive git config core.filemode false
@@ -50,7 +50,7 @@ RUN git submodule init && git submodule update
 WORKDIR /var/www/MISP/app
 
 # FIX COMPOSER
-# hadolint ignore=SC2116
+# hadolint ignore=SC2116,SC2086
 RUN curl --fail --location -o composer-setup.php https://getcomposer.org/installer && \
     EXPECTED_SIGNATURE="$(curl https://composer.github.io/installer.sig)"; php -r "if (hash_file('sha384', 'composer-setup.php') == '$(echo $EXPECTED_SIGNATURE)' ) { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" && \
     php composer-setup.php && \
