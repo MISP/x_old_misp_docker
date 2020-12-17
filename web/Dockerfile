@@ -75,6 +75,7 @@ RUN chown -R www-data:www-data /var/www/MISP && \
 
 RUN cp /var/www/MISP/INSTALL/misp.logrotate /etc/logrotate.d/misp
 
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # Preconfigure setting for packages
 RUN echo "postfix postfix/main_mailer_type string Local only" \
   | debconf-set-selections && \
@@ -105,6 +106,7 @@ RUN sudo -u www-data cp -a /var/www/MISP/app/Config/bootstrap.default.php /var/w
     chmod -R 750 /var/www/MISP/app/Config
 
 # Replace the default salt
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN sed -i -E "s/'salt'\s=>\s'(\S+)'/'salt' => '$(openssl rand -base64 32|tr "/" "-")'/" /var/www/MISP/app/Config/config.php
 
 # Enable workers at boot time
