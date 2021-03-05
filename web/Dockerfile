@@ -49,9 +49,6 @@ RUN ( \
     echo 'startsecs = 0'; \
     echo 'autorestart = false'; \
 ) >> /etc/supervisor/conf.d/supervisord.conf
- 
-# Modify syslog configuration
-RUN sed -i -E 's/^(\s*)system\(\);/\1unix-stream("\/dev\/log");/' /etc/syslog-ng/syslog-ng.conf
 
 # Add run script
 # Trigger to perform first boot operations
