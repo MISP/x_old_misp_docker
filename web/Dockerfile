@@ -4,15 +4,15 @@ FROM ubuntu:latest
 # Install core components
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN locale-gen en_US.UTF-8
-ENV LANG en_US.UTF-8
-
 RUN apt-get update && \
     apt-get dist-upgrade -y && apt-get autoremove -y && apt-get clean && \
     apt-get install -y software-properties-common && \
     apt-get install -y postfix && \
     apt-get install -y mysql-client curl gcc git gnupg-agent \
         make python openssl redis-server sudo vim zip locales
+
+RUN locale-gen en_US.UTF-8
+ENV LANG en_US.UTF-8
 		
 # Install script
 RUN INSTALL_NODB.sh
