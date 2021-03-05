@@ -15,11 +15,10 @@ RUN locale-gen en_US.UTF-8
 ENV LANG en_US.UTF-8
 		
 # Install script
-COPY . INSTALL_NODB.sh
-RUN chmod +x INSTALL_NODB.sh
-RUN chown www-data:www-data INSTALL_NODB.sh
+COPY /tmp INSTALL_NODB.sh
+RUN chmod +x /tmp/INSTALL_NODB.sh
 USER www-data
-RUN ./INSTALL_NODB.sh
+RUN sh /tmp/INSTALL_NODB.sh
 
 # Supervisord Setup
 RUN ( \
