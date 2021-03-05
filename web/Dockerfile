@@ -31,7 +31,7 @@ RUN sed -i \
         -e "s/memory_limit = 128M/memory_limit = 2048M/" \
         -e "s/upload_max_filesize = 2M/upload_max_filesize = 50M/" \
         -e "s/post_max_size = 8M/post_max_size = 50M/" \
-        /etc/php/7.2/apache2/php.ini
+        /etc/php/7.4/apache2/php.ini
 
 RUN apt-get install -y python3-dev python3-pip python3-setuptools \
         python3-lxml libjpeg-dev \
