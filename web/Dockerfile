@@ -17,6 +17,8 @@ ENV LANG en_US.UTF-8
 # Install script
 COPY . INSTALL_NODB.sh
 RUN chmod +x INSTALL_NODB.sh
+RUN chown www-data:www-data INSTALL_NODB.sh
+USER www-data
 RUN ./INSTALL_NODB.sh
 
 # Supervisord Setup
