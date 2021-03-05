@@ -1,5 +1,5 @@
 
-FROM ubuntu:bionic
+FROM ubuntu:latest
 
 # Install core components
 ENV DEBIAN_FRONTEND noninteractive
