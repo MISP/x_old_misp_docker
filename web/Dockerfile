@@ -15,6 +15,8 @@ RUN locale-gen en_US.UTF-8
 ENV LANG en_US.UTF-8
 		
 # Install script
+COPY . INSTALL_NODB.sh
+RUN chmod +x INSTALL_NODB.sh
 RUN INSTALL_NODB.sh
 
 # Supervisord Setup
