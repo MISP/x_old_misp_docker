@@ -8,7 +8,7 @@ RUN apt-get update && \
     apt-get dist-upgrade -y && apt-get autoremove -y && apt-get clean && \
     apt-get install -y software-properties-common && \
     apt-get install -y postfix && \
-    apt-get install -y mysql-client curl gcc git gnupg-agent \
+    apt-get install -y mysql-client wget curl gcc git gnupg-agent \
         make python openssl redis-server sudo vim zip locales
 
 RUN locale-gen en_US.UTF-8

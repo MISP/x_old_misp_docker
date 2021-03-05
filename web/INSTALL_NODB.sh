@@ -184,7 +184,6 @@ usage () {
     SCRIPT_NAME=$0
   fi
 
-  exec &> /dev/tty
   space
   echo -e "Please specify what type of ${LBLUE}MISP${NC} setup you want to install."
   space
@@ -784,7 +783,6 @@ kaliUpgrade () {
 
 # Disables sleep
 disableSleep () {
-  debug "Disabling sleep etc if run from a Laptop as the install might take some time…" > /dev/tty
   gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-timeout 0 2> /dev/null
   gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-battery-timeout 0 2> /dev/null
   gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-battery-type nothing 2> /dev/null
@@ -811,7 +809,6 @@ checkAptLock () {
   fi
   while [ "$DONE" != "0" ]; do
     sudo apt-get check 2> /dev/null > /dev/null && DONE=0
-    echo -e "${LBLUE}apt${NC} is maybe ${RED}locked${NC}, waiting ${RED}$SLEEP${NC} seconds." > /dev/tty
     sleep $SLEEP
     SLEEP=$[$SLEEP+3]
   done
@@ -2622,10 +2619,8 @@ generateInstaller () {
 # Make sure no alias exists
 [[ $(type -t debug) == "alias" ]] && unalias debug
 debug () {
-  echo -e "${RED}Next step:${NC} ${GREEN}$1${NC}" > /dev/tty
   if [[ ! -z ${DEBUG} ]]; then
     NO_PROGRESS=1
-    echo -e "${RED}Debug Mode${NC}, press ${LBLUE}enter${NC} to continue..." > /dev/tty
     exec 3>&1
     read
   else
