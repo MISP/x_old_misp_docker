@@ -133,7 +133,7 @@ RUN rm -rf misp-objects && git clone https://github.com/MISP/misp-objects.git &&
     chown -R www-data:www-data misp-objects misp-galaxy warninglists taxonomies
 
 # Install MISP build requirements
-RUN sudo -E apt-get -y install libpoppler73 libpoppler-dev libpoppler-cpp-dev
+RUN sudo -E apt-get -y install libpq5 libjpeg-dev tesseract-ocr libpoppler-cpp-dev imagemagick libopencv-dev zbar-tools libzbar0 libzbar-dev libfuzzy-dev
 
 # Install MISP Modules
 WORKDIR /opt
