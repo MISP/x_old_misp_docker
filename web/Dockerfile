@@ -21,7 +21,7 @@ RUN apt-get install -y apache2 apache2-doc apache2-utils && \
 
 # PHP 7.4 and install MySQL PDO extension
 RUN apt-get update
-RUN apt-get install -y libapache2-mod-php php php-dev php-json \
+RUN apt-get install -y --fix-missing libapache2-mod-php php php-dev php-json \
         php-mysql php-redis php-xml php-mbstring \
         php-gd php-pear php-opcache \
         pkg-config libbson-1.0 libmongoc-1.0-0
