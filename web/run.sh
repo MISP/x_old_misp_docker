@@ -27,7 +27,7 @@ if [ -r /.firstboot.tmp ]; then
         if [ -z "$POSTFIX_RELAY_HOST" ]; then
                 echo "POSTFIX_RELAY_HOST is not set, please configure Postfix manually later..."
         else
-                postconf -e "relayhost = $POSTFIX_RELAY"
+                postconf -e "relayhost = $POSTFIX_RELAY_HOST"
         fi
 
         # Fix timezone (adapt to your local zone)
