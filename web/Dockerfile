@@ -1,5 +1,5 @@
 
-FROM ubuntu:bionic
+FROM ubuntu:focal
 
 # Install core components
 ENV DEBIAN_FRONTEND noninteractive
@@ -19,11 +19,13 @@ RUN apt-get install -y apache2 apache2-doc apache2-utils && \
     a2dismod status && \
     a2dissite 000-default
 
-# PHP 7.2 and install MySQL PDO extension
-RUN apt-get install -y libapache2-mod-php php php-dev php-json \
+# PHP 7.4 and install MySQL PDO extension
+RUN apt-get update
+RUN apt-get install -y --fix-missing libapache2-mod-php php php-dev php-json \
         php-mysql php-redis php-xml php-mbstring \
         php-gd php-pear php-opcache \
-        pkg-config libbson-1.0 libmongoc-1.0-0
+        pkg-config libbson-1.0 libmongoc-1.0-0 \
+        php-zip php-bcmath php-intl
 
 # Fix php.ini with recommended settings
 RUN sed -i \
@@ -31,7 +33,7 @@ RUN sed -i \
         -e "s/memory_limit = 128M/memory_limit = 2048M/" \
         -e "s/upload_max_filesize = 2M/upload_max_filesize = 50M/" \
         -e "s/post_max_size = 8M/post_max_size = 50M/" \
-        /etc/php/7.2/apache2/php.ini
+        /etc/php/7.4/apache2/php.ini
 
 RUN apt-get install -y python3-dev python3-pip python3-setuptools \
         python3-lxml libjpeg-dev \
@@ -133,7 +135,7 @@ RUN rm -rf misp-objects && git clone https://github.com/MISP/misp-objects.git &&
     chown -R www-data:www-data misp-objects misp-galaxy warninglists taxonomies
 
 # Install MISP build requirements
-RUN sudo -E apt-get -y install libpoppler73 libpoppler-dev libpoppler-cpp-dev
+RUN sudo -E apt-get -y install libpoppler97 libpoppler-dev libpoppler-cpp-dev
 
 # Install MISP Modules
 WORKDIR /opt
