@@ -13,6 +13,10 @@ RUN apt-get update && \
 
 RUN locale-gen en_US.UTF-8
 ENV LANG en_US.UTF-8
+
+RUN adduser misp sudo
+
+USER misp
 		
 # Install script
 COPY INSTALL_NODB.sh .
