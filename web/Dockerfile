@@ -15,13 +15,18 @@ RUN locale-gen en_US.UTF-8
 ENV LANG en_US.UTF-8
 
 RUN useradd misp && usermod -aG sudo misp
-
-USER misp
-		
+	
 # Install script
 COPY INSTALL_NODB.sh .
 RUN chmod +x INSTALL_NODB.sh
+RUN echo "ALL ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+
+
+USER misp
+
 RUN bash INSTALL_NODB.sh -A -u
+
+USER root
 
 # Supervisord Setup
 RUN ( \
