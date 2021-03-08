@@ -14,7 +14,7 @@ RUN apt-get update && \
 RUN locale-gen en_US.UTF-8
 ENV LANG en_US.UTF-8
 
-RUN adduser misp sudo
+RUN useradd misp && usermod -aG sudo misp
 
 USER misp
 		
