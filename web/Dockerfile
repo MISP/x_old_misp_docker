@@ -9,7 +9,7 @@ RUN apt-get update && \
     apt-get install -y software-properties-common && \
     apt-get install -y postfix && \
     apt-get install -y mysql-client curl gcc git gnupg-agent \
-        make python3 openssl redis-server sudo vim zip locales wget supervisor
+        make python openssl redis-server sudo vim zip locales
 
 RUN locale-gen en_US.UTF-8
 ENV LANG en_US.UTF-8
