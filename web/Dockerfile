@@ -64,7 +64,7 @@ RUN ( \
     echo 'autorestart = false'; \
     echo ''; \
     echo '[program:misp-modules]'; \
-    echo 'command=/bin/bash -c "misp-modules -s -l 127.0.0.1"'; \
+    echo 'command=/bin/bash -c "/var/www/MISP/venv/bin/misp-modules -l 127.0.0.1 -s"'; \
     echo 'user = www-data'; \
     echo 'startsecs = 0'; \
     echo 'autorestart = false'; \
