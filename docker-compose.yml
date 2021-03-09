@@ -1,4 +1,4 @@
-version: '2'
+version: '3'
 
 services:
   web:
@@ -10,6 +10,7 @@ services:
     restart: unless-stopped
     ports:
       - "80:80"
+      - "443:443"
     volumes:
       - /dev/urandom:/dev/random
       - ${DATA_DIR}/web:/var/www/MISP

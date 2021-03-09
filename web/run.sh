@@ -2,10 +2,12 @@
 #
 # MISP docker startup script
 # Xavier Mertens <xavier@rootshell.be>
+# Steven Goossens <steven@teamg.be>
 #
 # 2017/05/17 - Created
 # 2017/05/31 - Fixed small errors
 # 2019/10/17 - Use built-in mysql docker DB creation and use std env names (dafal)
+# 2021/03/09 - Update to work with the install script provided by MISP. Includes https support, Python venv,...
 #
 
 set -e
@@ -89,7 +91,7 @@ if [ -r /.firstboot.tmp ]; then
         # MISP configuration
         echo "Creating MISP configuration files"
         cd /var/www/MISP/app/Config
-        cp -a database.default.php database.php
+	cp -a database.default.php database.php
         sed -i "s/localhost/$MYSQL_HOST/" database.php
         sed -i "s/db\s*login/$MYSQL_USER/" database.php
         sed -i "s/8889/3306/" database.php
@@ -102,7 +104,10 @@ if [ -r /.firstboot.tmp ]; then
                 echo "Fixing the MISP base URL ($MISP_BASEURL) ..."
 		sed -i "s@'baseurl'[\t ]*=>[\t ]*'',@'baseurl' => '$MISP_BASEURL',@g" /var/www/MISP/app/Config/config.php
         fi
-
+		
+		#Redis should not run as a daemon
+		sed -i "s/daemonize yes/daemonize no/g" /etc/redis/redis.conf
+		
         # Generate the admin user PGP key
         echo "Creating admin GnuPG key"
         if [ -z "$MISP_ADMIN_EMAIL" -o -z "$MISP_ADMIN_PASSPHRASE" ]; then
@@ -141,6 +146,7 @@ fi
 # non-live will make it live again if the container restarts.  That seems
 # better than the default which is that MISP is non-live on container restart.
 # Ideally live/non-live would be persisted in the database.
+/var/www/MISP/app/Console/cake Admin setSetting "MISP.python_bin" "/var/www/MISP/venv/bin/python"
 /var/www/MISP/app/Console/cake live 1
 chown www-data:www-data /var/www/MISP/app/Config/config.php*
 

@@ -9,7 +9,7 @@ RUN apt-get update && \
     apt-get install -y software-properties-common && \
     apt-get install -y postfix && \
     apt-get install -y mysql-client curl gcc git gnupg-agent \
-        make python openssl redis-server sudo vim zip locales wget supervisor
+        make python3 openssl redis-server sudo vim zip locales wget supervisor
 
 RUN locale-gen en_US.UTF-8
 ENV LANG en_US.UTF-8
@@ -27,17 +27,6 @@ USER misp
 RUN bash INSTALL_NODB.sh -A -u
 
 USER root
-
-# Install MISP Modules
-WORKDIR /opt
-RUN git clone --branch v2.4.134 https://github.com/MISP/misp-modules.git
-RUN cd misp-modules && \
-    pip3 install --upgrade pip setuptools wheel && \
-    pip3 install scikit-build && \    
-    pip3 install opencv-python && \ 
-    pip3 install -I -r REQUIREMENTS && \
-    pip3 install -I . && \
-    echo "sudo -u www-data misp-modules -s -l 127.0.0.1 &" >>/etc/rc.local
 
 # Supervisord Setup
 RUN ( \
@@ -74,7 +63,6 @@ RUN ( \
 # Trigger to perform first boot operations
 ADD run.sh /run.sh
 RUN chmod 0755 /run.sh && touch /.firstboot.tmp
-
 # Make a backup of /var/www/MISP to restore it to the local moint point at first boot
 WORKDIR /var/www/MISP
 RUN tar czpf /root/MISP.tgz .
