@@ -29,7 +29,7 @@ if [ -r /.firstboot.tmp ]; then
         if [ -z "$POSTFIX_RELAY_HOST" ]; then
                 echo "POSTFIX_RELAY_HOST is not set, please configure Postfix manually later..."
         else
-                postconf -e "relayhost = $POSTFIX_RELAY"
+                postconf -e "relayhost = $POSTFIX_RELAY_HOST"
         fi
 
         # Fix timezone (adapt to your local zone)
@@ -102,7 +102,7 @@ if [ -r /.firstboot.tmp ]; then
                 echo "No base URL defined, don't forget to define it manually!"
         else
                 echo "Fixing the MISP base URL ($MISP_BASEURL) ..."
-		sed -i "s@'baseurl'[\t ]*=>[\t ]*'',@'baseurl' => '$MISP_BASEURL',@g" /var/www/MISP/app/Config/config.php
+                sed -i "s@'baseurl'[\t ]*=>[\t ]*'',@'baseurl' => '$MISP_BASEURL',@g" /var/www/MISP/app/Config/config.php
         fi
 		
 		#Redis should not run as a daemon
