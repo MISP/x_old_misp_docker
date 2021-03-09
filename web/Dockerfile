@@ -28,6 +28,17 @@ RUN bash INSTALL_NODB.sh -A -u
 
 USER root
 
+# Install MISP Modules
+WORKDIR /opt
+RUN git clone --branch v2.4.134 https://github.com/MISP/misp-modules.git
+RUN cd misp-modules && \
+    pip3 install --upgrade pip setuptools wheel && \
+    pip3 install scikit-build && \    
+    pip3 install opencv-python && \ 
+    pip3 install -I -r REQUIREMENTS && \
+    pip3 install -I . && \
+    echo "sudo -u www-data misp-modules -s -l 127.0.0.1 &" >>/etc/rc.local
+
 # Supervisord Setup
 RUN ( \
     echo '[supervisord]'; \
