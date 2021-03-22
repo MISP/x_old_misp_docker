@@ -117,6 +117,11 @@ Don't forget:
 - Change the MISP admin email address to $MISP_ADMIN_EMAIL
 
 __WELCOME__
+
+	#Add crontab to sync data from remote servers
+	service crontab start
+	{ crontab -l; echo "0 * * * * /var/www/MISP/app/Console/cake Server pullAll 2 update"; } | crontab -l
+
         rm -f /.firstboot.tmp
 fi
 
