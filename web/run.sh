@@ -119,8 +119,8 @@ Don't forget:
 __WELCOME__
 
 	#Add crontab to sync data from remote servers
-	service crontab start
-	{ crontab -l; echo "0 * * * * /var/www/MISP/app/Console/cake Server pullAll 2 update"; } | crontab -l
+	service cron start
+	{ crontab -l 2>/dev/null || true; echo "0 * * * * /var/www/MISP/app/Console/cake Server pullAll 2 update"; } | crontab -
 
         rm -f /.firstboot.tmp
 fi
