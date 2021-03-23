@@ -62,6 +62,8 @@ RUN ( \
 # Add run script
 # Trigger to perform first boot operations
 ADD run.sh /run.sh
+RUN mv /etc/apache2/sites-available/misp-ssl.conf /etc/apache2/sites-available/misp-ssl.conf.bak
+ADD misp-ssl.conf /etc/apache2/sites-available/misp-ssl.conf
 RUN chmod 0755 /run.sh && touch /.firstboot.tmp
 # Make a backup of /var/www/MISP to restore it to the local moint point at first boot
 WORKDIR /var/www/MISP
