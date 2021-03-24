@@ -120,7 +120,7 @@ __WELCOME__
 
 	#Add crontab to sync data from remote servers
 	service cron start
-	{ crontab -l 2>/dev/null || true; echo "0 * * * * /var/www/MISP/app/Console/cake Server pullAll 2 update"; } | crontab -
+	{ crontab -l 2>/dev/null || true; echo "0 * * * * /var/www/MISP/app/Console/cake Server pullAll 2 full"; } | crontab -
 
         rm -f /.firstboot.tmp
 fi
