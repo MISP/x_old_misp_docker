@@ -5,11 +5,16 @@ FROM ubuntu:latest
 ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update && \
-    apt-get dist-upgrade -y && apt-get autoremove -y && apt-get clean && \
+    apt-get dist-upgrade -y && apt-get upgrade && apt-get autoremove -y && apt-get clean && \
     apt-get install -y software-properties-common && \
     apt-get install -y postfix && \
     apt-get install -y mysql-client curl gcc git gnupg-agent \
-        make python openssl redis-server sudo vim zip locales wget iproute2 supervisor cron
+        make openssl redis-server sudo vim zip locales wget iproute2 supervisor cron
+
+RUN add-apt-repository ppa:deadsnakes/ppa
+RUN apt-get update && apt-get -y install python3.9 python3-pip
+RUN pip3 install --upgrade pip
+
 
 RUN locale-gen en_US.UTF-8
 ENV LANG en_US.UTF-8
@@ -27,6 +32,9 @@ USER misp
 RUN bash INSTALL_NODB.sh -A -u
 
 USER root
+
+RUN pip3 list -o | cut -f1 -d' ' | tr " " "\n" | awk '{if(NR>=3)print}' | cut -d' ' -f1 | xargs -n1 pip3 install -U ; exit 0 #Hack error code
+
 
 # Supervisord Setup
 RUN ( \
