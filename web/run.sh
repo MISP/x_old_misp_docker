@@ -140,5 +140,5 @@ chown www-data:www-data /var/www/MISP/app/Config/config.php*
 # Start supervisord
 echo "Starting supervisord"
 cd /
-exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
+exec supervisord -c /etc/supervisor/conf.d/supervisord.conf
           
