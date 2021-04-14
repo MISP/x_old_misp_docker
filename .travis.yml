@@ -13,4 +13,3 @@ before_install:
 
 script:
   - docker-compose build
-  - docker-compose -f docker-compose-nginx.yml build

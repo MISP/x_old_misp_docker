@@ -2,10 +2,12 @@
 #
 # MISP docker startup script
 # Xavier Mertens <xavier@rootshell.be>
+# Steven Goossens <steven@teamg.be>
 #
 # 2017/05/17 - Created
 # 2017/05/31 - Fixed small errors
 # 2019/10/17 - Use built-in mysql docker DB creation and use std env names (dafal)
+# 2021/03/09 - Update to work with the install script provided by MISP. Includes https support, Python venv,...
 #
 
 set -e
@@ -89,7 +91,7 @@ if [ -r /.firstboot.tmp ]; then
         # MISP configuration
         echo "Creating MISP configuration files"
         cd /var/www/MISP/app/Config
-        cp -a database.default.php database.php
+	cp -a database.default.php database.php
         sed -i "s/localhost/$MYSQL_HOST/" database.php
         sed -i "s/db\s*login/$MYSQL_USER/" database.php
         sed -i "s/8889/3306/" database.php
@@ -102,28 +104,9 @@ if [ -r /.firstboot.tmp ]; then
                 echo "Fixing the MISP base URL ($MISP_BASEURL) ..."
                 sed -i "s@'baseurl'[\t ]*=>[\t ]*'',@'baseurl' => '$MISP_BASEURL',@g" /var/www/MISP/app/Config/config.php
         fi
-
-        # Generate the admin user PGP key
-        echo "Creating admin GnuPG key"
-        if [ -z "$MISP_ADMIN_EMAIL" -o -z "$MISP_ADMIN_PASSPHRASE" ]; then
-                echo "No admin details provided, don't forget to generate the PGP key manually!"
-        else
-                echo "Generating admin PGP key ... (please be patient, we need some entropy)"
-                cat >/tmp/gpg.tmp <<GPGEOF
-%echo Generating a basic OpenPGP key
-Key-Type: RSA
-Key-Length: 2048
-Name-Real: MISP Admin
-Name-Email: $MISP_ADMIN_EMAIL
-Expire-Date: 0
-Passphrase: $MISP_ADMIN_PASSPHRASE
-%commit
-%echo Done
-GPGEOF
-                sudo -u www-data gpg --homedir /var/www/MISP/.gnupg --gen-key --batch /tmp/gpg.tmp >>/tmp/install.log
-                rm -f /tmp/gpg.tmp
-		sudo -u www-data gpg --homedir /var/www/MISP/.gnupg --export --armor $MISP_ADMIN_EMAIL > /var/www/MISP/app/webroot/gpg.asc
-        fi
+		
+		#Redis should not run as a daemon
+		sed -i "s/daemonize yes/daemonize no/g" /etc/redis/redis.conf
 
         # Display tips
         cat <<__WELCOME__
@@ -134,6 +117,15 @@ Don't forget:
 - Change the MISP admin email address to $MISP_ADMIN_EMAIL
 
 __WELCOME__
+
+	#Add crontab to sync data from remote servers
+	service cron start
+	
+	##Schedule to sync all servers every hour
+	{ crontab -l 2>/dev/null || true; echo "0 * * * * /var/www/MISP/app/Console/cake Server pullAll 2 full"; } | crontab -
+	
+	##Schedule to fetch all feeds at 1 am
+	{ crontab -l 2>/dev/null || true; echo "0 1 * * * /var/www/MISP/app/Console/cake Server fetchFeed 2 all"; } | crontab -
         rm -f /.firstboot.tmp
 fi
 
@@ -141,11 +133,12 @@ fi
 # non-live will make it live again if the container restarts.  That seems
 # better than the default which is that MISP is non-live on container restart.
 # Ideally live/non-live would be persisted in the database.
+/var/www/MISP/app/Console/cake Admin setSetting "MISP.python_bin" "/var/www/MISP/venv/bin/python"
 /var/www/MISP/app/Console/cake live 1
 chown www-data:www-data /var/www/MISP/app/Config/config.php*
 
 # Start supervisord
 echo "Starting supervisord"
 cd /
-exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
+exec supervisord -c /etc/supervisor/conf.d/supervisord.conf
           
