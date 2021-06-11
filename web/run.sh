@@ -124,9 +124,6 @@ __WELCOME__
 	##Schedule to sync all servers every hour
 	{ crontab -l 2>/dev/null || true; echo "0 * * * * /var/www/MISP/app/Console/cake Server pullAll 2 full"; } | crontab -
 	
-	##Schedule to push out all events to servers every hour
-	{ crontab -l 2>/dev/null || true; echo "0 * * * * /var/www/MISP/app/Console/cake Server pullAll 2 full"; } | crontab -
-	
 	##Schedule to fetch all feeds at 1 am
 	{ crontab -l 2>/dev/null || true; echo "0 1 * * * /var/www/MISP/app/Console/cake Server fetchFeed 2 all"; } | crontab -
 	
