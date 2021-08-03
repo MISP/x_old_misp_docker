@@ -1,7 +1,7 @@
 MISP Docker
 ===========
 
-[![](https://travis-ci.org/MISP/misp-docker.svg?branch=master)](https://travis-ci.org/yaleman/misp-docker)
+[![](https://travis-ci.org/MISP/misp-docker.svg?branch=master)](https://www.travis-ci.com/github/stevengoossensB/misp-docker)
 
 The files in this repository are used to create a Docker container running a [MISP](http://www.misp-project.org) ("Malware Information Sharing Platform") instance.
 
