@@ -22,7 +22,7 @@ ENV LANG en_US.UTF-8
 RUN useradd misp && usermod -aG sudo misp
 	
 # Install script
-COPY INSTALL_NODB.sh .
+COPY --chown=misp:misp INSTALL_NODB.sh .
 RUN chmod +x INSTALL_NODB.sh
 RUN echo "ALL ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
