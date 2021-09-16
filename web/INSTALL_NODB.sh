@@ -146,7 +146,7 @@ MISPvars () {
   alias checkAptLock="echo 'Function used in Installer to make sure apt is not locked'"
 
   # php.ini configuration
-  upload_max_filesize="50M"
+  upload_max_filesize="250M"
   post_max_size="50M"
   max_execution_time="300"
   memory_limit="2048M"
@@ -396,7 +396,7 @@ checkInstaller () {
   # Workaround: shasum is not available on RHEL, only checking sha512
   if [[ "${FLAVOUR}" == "rhel" ]] || [[ "${FLAVOUR}" == "centos" ]]; then
   INSTsum=$(sha512sum ${0} | cut -f1 -d\ )
-  /usr/bin/wget --no-cache -q -O /tmp/INSTALL.sh.sha512 https://raw.githubusercontent.com/stevengoossensB/misp-docker/master/web/INSTALL_NODB.sh.sha512
+  /usr/bin/wget --no-cache -q -O /tmp/INSTALL.sh.sha512 https://raw.githubusercontent.com/RH-ISAC/misp-docker/master/web/INSTALL_NODB.sh.sha512
         chsum=$(cat /tmp/INSTALL.sh.sha512)
   if [[ "${chsum}" == "${INSTsum}" ]]; then
     echo "SHA512 matches"
@@ -413,7 +413,7 @@ checkInstaller () {
     # SHAsums to be computed, not the -- notatiation is for ease of use with rhash
     SHA_SUMS="--sha1 --sha256 --sha384 --sha512"
     for sum in $(echo ${SHA_SUMS} |sed 's/--sha//g'); do
-      /usr/bin/wget --no-cache -q -O /tmp/INSTALL.sh.sha${sum} https://raw.githubusercontent.com/stevengoossensB/misp-docker/master/web/INSTALL_NODB.sh.sha${sum}
+      /usr/bin/wget --no-cache -q -O /tmp/INSTALL.sh.sha${sum} https://raw.githubusercontent.com/RH-ISAC/misp-docker/master/web/INSTALL_NODB.sh.sha${sum}
       INSTsum=$(shasum -a ${sum} ${0} | cut -f1 -d\ )
       chsum=$(cat /tmp/INSTALL.sh.sha${sum} | cut -f1 -d\ )
 
@@ -1204,6 +1204,14 @@ installDepsPhp74 () {
   for key in upload_max_filesize post_max_size max_execution_time max_input_time memory_limit
   do
       sudo sed -i "s/^\($key\).*/\1 = $(eval echo \${$key})/" $PHP_INI
+  done
+
+  # improve session security
+  use_strict_mode="1"
+  sid_length="40"
+  for key in use_strict_mode sid_length
+  do
+    sudo sed -i "s/^\(session\.$key\).*/\1 = $(eval echo \${$key})/" $PHP_INI
   done
 }
 
