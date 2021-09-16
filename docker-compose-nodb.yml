@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  web:
+    build: web
+    container_name: misp_web
+    image: misp:latest
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /dev/urandom:/dev/random
+      - ${DATA_DIR}/web:/var/www/MISP
+    environment:
+      - MYSQL_HOST=${MYSQL_HOST}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MISP_ADMIN_EMAIL=${MISP_ADMIN_EMAIL}
+      - MISP_ADMIN_PASSPHRASE=${MISP_ADMIN_PASSPHRASE}
+      - MISP_BASEURL=${MISP_BASEURL}
+      - POSTFIX_RELAY_HOST=${POSTFIX_RELAY_HOST}
+      - TIMEZONE=${TIMEZONE}
