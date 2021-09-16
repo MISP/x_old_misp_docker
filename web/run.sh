@@ -56,10 +56,10 @@ if [ -r /.firstboot.tmp ]; then
 		
         # Set MYSQL_PASSWORD
         if [ -z "$MYSQL_PASSWORD" ]; then
-                echo "MYSQL_PASSWORD is not set, use default value 'misp'"
+                echo "MYSQL_PASSWORD is not set, use default value '<REDACTED>'"
                 MYSQL_PASSWORD=misp
         else
-                echo "MYSQL_PASSWORD is set to '$MYSQL_PASSWORD'"
+                echo "MYSQL_PASSWORD is set to '<REDACTED>'"
         fi
 
         ret=`echo 'SHOW TABLES;' | mysql -u $MYSQL_USER --password="$MYSQL_PASSWORD" -h $MYSQL_HOST -P 3306 $MYSQL_DATABASE # 2>&1`
