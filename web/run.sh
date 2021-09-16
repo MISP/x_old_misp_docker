@@ -102,7 +102,7 @@ if [ -r /.firstboot.tmp ]; then
                 echo "No base URL defined, don't forget to define it manually!"
         else
                 echo "Fixing the MISP base URL ($MISP_BASEURL) ..."
-                sed -i "s@'baseurl'[\t ]*=>[\t ]*'',@'baseurl' => '$MISP_BASEURL',@g" /var/www/MISP/app/Config/config.php
+                /var/www/MISP/app/Console/cake Admin setSetting "MISP.baseurl" "$MISP_BASEURL"
         fi
 		
 		#Redis should not run as a daemon
