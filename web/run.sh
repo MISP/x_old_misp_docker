@@ -30,6 +30,22 @@ if [ -r /.firstboot.tmp ]; then
                 echo "POSTFIX_RELAY_HOST is not set, please configure Postfix manually later..."
         else
                 postconf -e "relayhost = $POSTFIX_RELAY_HOST"
+
+                # Relay Host Auth
+                if [ -z "$POSTFIX_USERNAME" ] || [ -z $POSTFIX_PASSWORD ]; then
+                        echo "POSTFIX_USERNAME and/or POSTFIX_PASSWORD not set, no auth configured..."
+                else
+                        echo "$POSTFIX_RELAY_HOST  $POSTFIX_USERNAME:$POSTFIX_PASSWORD" > /etc/postfix/sasl_passwd
+                        postmap /etc/postfix/sasl_passwd
+                        rm /etc/postfix/sasl_passwd
+                        postconf -e "smtp_use_tls = yes"
+                        postconf -e "smtp_sasl_auth_enable = yes"
+                        postconf -e "smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd"
+                        postconf -e "smtp_sasl_security_options = noanonymous"
+                        postconf -e "smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt"
+                fi
+                # RHISAC Environment
+                postconf -e "inet_protocols = ipv4"
         fi
 
         # Fix timezone (adapt to your local zone)
@@ -108,6 +124,17 @@ if [ -r /.firstboot.tmp ]; then
 		#Redis should not run as a daemon
 		sed -i "s/daemonize yes/daemonize no/g" /etc/redis/redis.conf
 
+        # Set MISP instance sender email
+        if [ -z "$MISP_INSTANCE_EMAIL" ]; then
+                echo "No instance email defined!"
+        else
+                echo "Setting the MISP instance email ($MISP_INSTANCE_EMAIL) ..."
+                /var/www/MISP/app/Console/cake Admin setSetting "MISP.email" "$MISP_INSTANCE_EMAIL"
+        fi
+
+        # Ensure postfix was started properly
+        service postfix restart
+        
         # Display tips
         cat <<__WELCOME__
 Congratulations!
@@ -136,6 +163,7 @@ fi
 /var/www/MISP/app/Console/cake Admin setSetting "MISP.python_bin" "/var/www/MISP/venv/bin/python"
 /var/www/MISP/app/Console/cake live 1
 chown www-data:www-data /var/www/MISP/app/Config/config.php*
+chmod o-rwx /var/www/MISP/app/Config/config.php*
 
 # Start supervisord
 echo "Starting supervisord"
