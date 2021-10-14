@@ -396,8 +396,7 @@ checkInstaller () {
   # Workaround: shasum is not available on RHEL, only checking sha512
   if [[ "${FLAVOUR}" == "rhel" ]] || [[ "${FLAVOUR}" == "centos" ]]; then
   INSTsum=$(sha512sum ${0} | cut -f1 -d\ )
-  /usr/bin/wget --no-cache -q -O /tmp/INSTALL.sh.sha512 https://raw.githubusercontent.com/stevengoossensB/misp-docker/master/web/INSTALL_NODB.sh.sha512
-        chsum=$(cat /tmp/INSTALL.sh.sha512)
+  chsum=$(cat INSTALL_NODB.sh.sha512)
   if [[ "${chsum}" == "${INSTsum}" ]]; then
     echo "SHA512 matches"
   else
@@ -413,9 +412,8 @@ checkInstaller () {
     # SHAsums to be computed, not the -- notatiation is for ease of use with rhash
     SHA_SUMS="--sha1 --sha256 --sha384 --sha512"
     for sum in $(echo ${SHA_SUMS} |sed 's/--sha//g'); do
-      /usr/bin/wget --no-cache -q -O /tmp/INSTALL.sh.sha${sum} https://raw.githubusercontent.com/stevengoossensB/misp-docker/master/web/INSTALL_NODB.sh.sha${sum}
       INSTsum=$(shasum -a ${sum} ${0} | cut -f1 -d\ )
-      chsum=$(cat /tmp/INSTALL.sh.sha${sum} | cut -f1 -d\ )
+      chsum=$(cat INSTALL_NODB.sh.sha${sum} | cut -f1 -d\ )
 
       if [[ "${chsum}" == "${INSTsum}" ]]; then
         echo "sha${sum} matches"
@@ -540,6 +538,7 @@ ask_o () {
 clean () {
   rm /tmp/INSTALL.stat
   rm /tmp/INSTALL.sh.*
+  rm /tmp/INSTALL_NODB.sh.*
 }
 
 # Check if misp user is present and if run as root
@@ -1017,7 +1016,7 @@ gitPullAllRCLOCAL () {
 # Main composer function
 composer () {
   sudo mkdir -p /var/www/.composer ; sudo chown ${WWW_USER}:${WWW_USER} /var/www/.composer
-  ${SUDO_WWW} sh -c "cd ${PATH_TO_MISP}/app ; php composer.phar install"
+  ${SUDO_WWW} sh -c "cd ${PATH_TO_MISP}/app ; php composer.phar install --no-dev"
 }
 
 
@@ -1335,15 +1334,6 @@ installCore () {
     sudo mkdir /var/www/.cache/
     sudo chown ${WWW_USER}:${WWW_USER} /var/www/.cache
 
-    for dependency in CybOXProject/python-cybox STIXProject/python-stix MAECProject/python-maec CybOXProject/mixbox; do
-      false; while [[ $? -ne 0 ]]; do checkAptLock; ${SUDO_WWW} git clone https://github.com/${dependency}.git ${PATH_TO_MISP_SCRIPTS}/${dependency##*/}; done
-      ${SUDO_WWW} git -C ${PATH_TO_MISP_SCRIPTS}/${dependency##*/} config core.filemode false
-      ${SUDO_WWW} ${PATH_TO_MISP}/venv/bin/pip install ${PATH_TO_MISP_SCRIPTS}/${dependency##*/}
-    done
-
-    debug "Install python-stix2"
-    ${SUDO_WWW} ${PATH_TO_MISP}/venv/bin/pip install ${PATH_TO_MISP}/cti-python-stix2
-
     debug "Install PyMISP"
     ${SUDO_WWW} ${PATH_TO_MISP}/venv/bin/pip install ${PATH_TO_MISP}/PyMISP
 
@@ -1385,12 +1375,7 @@ installCore () {
     false; while [[ $? -ne 0 ]]; do ${SUDO_WWW} git -C ${PATH_TO_MISP} submodule update --progress --init --recursive; done
 
     ${SUDO_WWW} ${PATH_TO_MISP}/venv/bin/pip install -U setuptools pip lief zmq redis python-magic plyara
-    for dependency in CybOXProject/python-cybox STIXProject/python-stix MAECProject/python-maec CybOXProject/mixbox; do
-      false; while [[ $? -ne 0 ]]; do checkAptLock; ${SUDO_WWW} git -C ${PATH_TO_MISP_SCRIPTS}/${dependency##*/} pull; done
-      ${SUDO_WWW} ${PATH_TO_MISP}/venv/bin/pip install -U ${PATH_TO_MISP_SCRIPTS}/${dependency##*/}
-    done
 
-    ${SUDO_WWW} ${PATH_TO_MISP}/venv/bin/pip install -U ${PATH_TO_MISP}/cti-python-stix2
     ${SUDO_WWW} ${PATH_TO_MISP}/venv/bin/pip install -U ${PATH_TO_MISP}/PyMISP
     false; while [[ $? -ne 0 ]]; do checkAptLock; ${SUDO_WWW} ${PATH_TO_MISP}/venv/bin/pip install -U git+https://github.com/kbandla/pydeep.git; done
 fi
@@ -1401,7 +1386,7 @@ installCake () {
   # Make composer cache happy
   # /!\ composer on Ubuntu when invoked with sudo -u doesn't set $HOME to /var/www but keeps it /home/misp \!/
   sudo mkdir -p /var/www/.composer ; sudo chown ${WWW_USER}:${WWW_USER} /var/www/.composer
-  ${SUDO_WWW} sh -c "cd ${PATH_TO_MISP}/app ;php composer.phar install"
+  ${SUDO_WWW} sh -c "cd ${PATH_TO_MISP}/app ;php composer.phar install --no-dev"
 
   # Enable CakeResque with php-redis
   sudo phpenmod redis
@@ -2069,35 +2054,9 @@ installCoreRHEL () {
   sudo chown $WWW_USER:$WWW_USER /usr/share/httpd/.cache
   $SUDO_WWW $PATH_TO_MISP/venv/bin/pip install -U pip setuptools
 
-  cd $PATH_TO_MISP/app/files/scripts
-  $SUDO_WWW git clone https://github.com/CybOXProject/python-cybox.git
-  $SUDO_WWW git clone https://github.com/STIXProject/python-stix.git
-  $SUDO_WWW git clone --branch master --single-branch https://github.com/lief-project/LIEF.git lief
-  $SUDO_WWW git clone https://github.com/CybOXProject/mixbox.git
-
   # If you umask is has been changed from the default, it is a good idea to reset it to 0022 before installing python modules
   UMASK=$(umask)
   umask 0022
-  
-  cd $PATH_TO_MISP/app/files/scripts/python-cybox
-  $SUDO_WWW git config core.filemode false
-  $SUDO_WWW $PATH_TO_MISP/venv/bin/pip install .
-  
-  cd $PATH_TO_MISP/app/files/scripts/python-stix
-  $SUDO_WWW git config core.filemode false
-  $SUDO_WWW $PATH_TO_MISP/venv/bin/pip install .
-
-  # install mixbox to accommodate the new STIX dependencies:
-  cd $PATH_TO_MISP/app/files/scripts/mixbox
-  $SUDO_WWW git config core.filemode false
-  $SUDO_WWW $PATH_TO_MISP/venv/bin/pip install .
-
-  # install STIX2.0 library to support STIX 2.0 export:
-  cd $PATH_TO_MISP/cti-python-stix2
-  $SUDO_WWW $PATH_TO_MISP/venv/bin/pip install .
-
-  # install maec
-  $SUDO_WWW $PATH_TO_MISP/venv/bin/pip install -U maec
 
   # install zmq
   $SUDO_WWW $PATH_TO_MISP/venv/bin/pip install -U zmq
@@ -2184,7 +2143,7 @@ installCake_RHEL ()
   #$SUDO_WWW $RUN_PHP -- php -r "if (hash_file('SHA384', 'composer-setup.php') === '$EXPECTED_SIGNATURE') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
   #$SUDO_WWW $RUN_PHP "php composer-setup.php"
   #$SUDO_WWW $RUN_PHP -- php -r "unlink('composer-setup.php');"
-  $SUDO_WWW $RUN_PHP "php composer.phar install"
+  $SUDO_WWW $RUN_PHP "php composer.phar install --no-dev"
 
   ## sudo yum install php-redis -y
   sudo scl enable rh-php72 'pecl channel-update pecl.php.net'
@@ -2838,12 +2797,6 @@ installMISPonKali () {
   # Make git ignore filesystem permission differences for submodules
   ${SUDO_WWW} git submodule foreach --recursive git config core.filemode false
 
-  cd ${PATH_TO_MISP}/app/files/scripts
-  false; while [[ $? -ne 0 ]]; do ${SUDO_WWW} git clone https://github.com/CybOXProject/python-cybox.git; done
-  false; while [[ $? -ne 0 ]]; do ${SUDO_WWW} git clone https://github.com/STIXProject/python-stix.git; done
-  false; while [[ $? -ne 0 ]]; do ${SUDO_WWW} git clone https://github.com/CybOXProject/mixbox.git; done
-  false; while [[ $? -ne 0 ]]; do ${SUDO_WWW} git clone https://github.com/MAECProject/python-maec.git; done
-
   sudo mkdir /var/www/.cache/
 
   MISP_USER_HOME=$(sudo -Hiu $MISP_USER env | grep HOME |cut -f 2 -d=)
@@ -2862,28 +2815,6 @@ installMISPonKali () {
   ## FIXME: The current stat of misp-dashboard is broken, disabling any use.
   ##debug "Installing MISP dashboard"
   ##mispDashboard
-
-  debug "Installing python-cybox"
-  cd ${PATH_TO_MISP}/app/files/scripts/python-cybox
-  ${SUDO_WWW} ${PATH_TO_MISP}/venv/bin/pip install .
-
-  debug "Installing python-stix"
-  cd ${PATH_TO_MISP}/app/files/scripts/python-stix
-  ${SUDO_WWW} ${PATH_TO_MISP}/venv/bin/pip install .
-
-  debug "Install maec"
-  cd ${PATH_TO_MISP}/app/files/scripts/python-maec
-  ${SUDO_WWW} ${PATH_TO_MISP}/venv/bin/pip install .
-
-  # install STIX2.0 library to support STIX 2.0 export
-  debug "Installing cti-python-stix2"
-  # install STIX2.0 library to support STIX 2.0 export:
-  cd ${PATH_TO_MISP}/cti-python-stix2
-  ${SUDO_WWW} ${PATH_TO_MISP}/venv/bin/pip install .
-
-  debug "Installing mixbox"
-  cd ${PATH_TO_MISP}/app/files/scripts/mixbox
-  ${SUDO_WWW} ${PATH_TO_MISP}/venv/bin/pip install .
 
   # install PyMISP
   debug "Installing PyMISP"
