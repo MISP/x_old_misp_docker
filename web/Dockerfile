@@ -9,7 +9,7 @@ RUN apt-get update && \
     apt-get install -y software-properties-common && \
     apt-get install -y postfix && \
     apt-get install -y mysql-client curl gcc git gnupg-agent \
-        make openssl redis-server sudo vim zip locales wget iproute2 supervisor cron
+    make openssl redis-server sudo vim zip locales wget iproute2 supervisor cron
 
 RUN add-apt-repository ppa:deadsnakes/ppa
 RUN apt-get update && apt-get -y install python3.9 python3-pip
@@ -20,9 +20,9 @@ RUN locale-gen en_US.UTF-8
 ENV LANG en_US.UTF-8
 
 RUN useradd misp && usermod -aG sudo misp
-	
+
 # Install script
-COPY INSTALL_NODB.sh .
+COPY --chown=misp:misp INSTALL_NODB.sh* ./
 RUN chmod +x INSTALL_NODB.sh
 RUN echo "ALL ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
@@ -65,7 +65,7 @@ RUN ( \
     echo 'user = www-data'; \
     echo 'startsecs = 0'; \
     echo 'autorestart = false'; \
-) >> /etc/supervisor/conf.d/supervisord.conf
+    ) >> /etc/supervisor/conf.d/supervisord.conf
 
 # Add run script
 # Trigger to perform first boot operations
