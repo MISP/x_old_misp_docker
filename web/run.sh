@@ -92,7 +92,8 @@ if [ -r /.firstboot.tmp ]; then
         echo "Creating MISP configuration files"
         cd /var/www/MISP/app/Config
 	cp -a database.default.php database.php
-        sed -i "s/localhost/$MYSQL_HOST/" database.php
+        sed -i "s/'database' => 'misp'/'database' => '$MYSQL_DATABASE'/" database.php
+	sed -i "s/localhost/$MYSQL_HOST/" database.php
         sed -i "s/db\s*login/$MYSQL_USER/" database.php
         sed -i "s/8889/3306/" database.php
         sed -i "s/db\s*password/$MYSQL_PASSWORD/" database.php
