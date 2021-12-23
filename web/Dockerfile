@@ -50,19 +50,18 @@ RUN ( \
     echo ''; \
     echo '[program:redis-server]'; \
     echo 'command=redis-server /etc/redis/redis.conf'; \
+    echo 'user=redis'; \
     echo ''; \
     echo '[program:apache2]'; \
     echo 'command=/bin/bash -c "source /etc/apache2/envvars && exec /usr/sbin/apache2 -D FOREGROUND"'; \
     echo ''; \
     echo '[program:resque]'; \
     echo 'command=/bin/bash /var/www/MISP/app/Console/worker/start.sh'; \
-    echo 'user = www-data'; \
     echo 'startsecs = 0'; \
     echo 'autorestart = false'; \
     echo ''; \
     echo '[program:misp-modules]'; \
     echo 'command=/bin/bash -c "/var/www/MISP/venv/bin/misp-modules -l 127.0.0.1 -s"'; \
-    echo 'user = www-data'; \
     echo 'startsecs = 0'; \
     echo 'autorestart = false'; \
     ) >> /etc/supervisor/conf.d/supervisord.conf
