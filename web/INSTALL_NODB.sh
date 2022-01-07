@@ -3084,6 +3084,7 @@ armv7l-debian-stretch
 armv7l-debian-buster
 armv7l-ubuntu-bionic
 armv7l-ubuntu-focal
+aarch64-ubuntu-focal
 "
 
 # Check if we actually support this configuration
