@@ -25,7 +25,7 @@ services:
       - MISP_BASEURL=${MISP_BASEURL}
       - POSTFIX_RELAY_HOST=${POSTFIX_RELAY_HOST}
       - TIMEZONE=${TIMEZONE}
-    entrypoint: "wait-for-it.sh -t 0 -h db -p 3306 -- /run.sh"
+    entrypoint: "wait-for-it.sh -t 0 -h ${MYSQL_DATABASE} -p 3306 -- /run.sh"
 
   db:
     container_name: misp_db
