@@ -1,5 +1,5 @@
 
-FROM ubuntu:latest
+FROM ubuntu:focal
 
 # Install core components
 ENV DEBIAN_FRONTEND noninteractive
