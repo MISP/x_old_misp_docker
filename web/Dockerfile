@@ -57,8 +57,11 @@ RUN ( \
     echo ''; \
     echo '[program:resque]'; \
     echo 'command=/bin/bash /var/www/MISP/app/Console/worker/start.sh'; \
+    echo 'user=www-data'; \
     echo 'startsecs = 0'; \
     echo 'autorestart = false'; \
+    echo 'redirect_stderr=true'; \
+    echo 'stdout_logfile=/var/www/MISP/app/tmp/logs/resque-start.log'; \
     echo ''; \
     echo '[program:misp-modules]'; \
     echo 'command=/bin/bash -c "/var/www/MISP/venv/bin/misp-modules -l 127.0.0.1 -s"'; \
