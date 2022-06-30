@@ -16,26 +16,26 @@ services:
       - /dev/urandom:/dev/random
       - ${DATA_DIR}/web:/var/www/MISP
     environment:
-      - MYSQL_HOST=${MYSQL_HOST}
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-      - MISP_ADMIN_EMAIL=${MISP_ADMIN_EMAIL}
-      - MISP_ADMIN_PASSPHRASE=${MISP_ADMIN_PASSPHRASE}
-      - MISP_BASEURL=${MISP_BASEURL}
-      - POSTFIX_RELAY_HOST=${POSTFIX_RELAY_HOST}
-      - TIMEZONE=${TIMEZONE}
-    entrypoint: "wait-for-it.sh -t 0 -h ${MYSQL_HOST} -p 3306 -- /run.sh"
+      - MYSQL_HOST=${MYSQL_HOST:-misp_db}
+      - MYSQL_DATABASE=${MYSQL_DATABASE:-misp}
+      - MYSQL_USER=${MYSQL_USER:-misp}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD:-misp}
+      - MISP_ADMIN_EMAIL=${MISP_ADMIN_EMAIL:-admin@admin.test}
+      - MISP_ADMIN_PASSPHRASE=${MISP_ADMIN_PASSPHRASE:-admin}
+      - MISP_BASEURL=${MISP_BASEURL:-https://localhost}
+      - POSTFIX_RELAY_HOST=${POSTFIX_RELAY_HOST:-relay.fqdn}
+      - TIMEZONE=${TIMEZONE:-Asia/Calcutta}
+    entrypoint: "wait-for-it.sh -t 0 -h ${MYSQL_HOST:-misp_db} -p 3306 -- /run.sh"
 
   db:
     container_name: misp_db
     image: mysql/mysql-server:5.7
-    hostname: ${MYSQL_HOST}
+    hostname: ${MYSQL_HOST:-misp_db}
     restart: unless-stopped
     volumes:
       - ${DATA_DIR}/db:/var/lib/mysql
     environment:
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE:-misp}
+      - MYSQL_USER=${MYSQL_USER:-misp}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD:-misp}
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
