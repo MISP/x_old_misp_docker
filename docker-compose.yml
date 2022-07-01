@@ -14,7 +14,7 @@ services:
     volumes:
       - ./web/wait-for-it.sh:/usr/local/bin/wait-for-it.sh:ro
       - /dev/urandom:/dev/random
-      - ${DATA_DIR}/web:/var/www/MISP
+      - ${DATA_DIR:-./data}/web:/var/www/MISP
     environment:
       - MYSQL_HOST=${MYSQL_HOST:-misp_db}
       - MYSQL_DATABASE=${MYSQL_DATABASE:-misp}
@@ -33,9 +33,13 @@ services:
     hostname: ${MYSQL_HOST:-misp_db}
     restart: unless-stopped
     volumes:
-      - ${DATA_DIR}/db:/var/lib/mysql
+      - ${DATA_DIR:-./data}/db:/var/lib/mysql
     environment:
       - MYSQL_DATABASE=${MYSQL_DATABASE:-misp}
       - MYSQL_USER=${MYSQL_USER:-misp}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD:-misp}
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-misp}
+
+volumes:
+  web:
+  db:
