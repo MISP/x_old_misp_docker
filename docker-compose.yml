@@ -24,7 +24,7 @@ services:
       - MISP_ADMIN_PASSPHRASE=${MISP_ADMIN_PASSPHRASE:-admin}
       - MISP_BASEURL=${MISP_BASEURL:-https://localhost}
       - POSTFIX_RELAY_HOST=${POSTFIX_RELAY_HOST:-relay.fqdn}
-      - TIMEZONE=${TIMEZONE:-Asia/Calcutta}
+      - TIMEZONE=${TIMEZONE:-Europe/Brussels}
     entrypoint: "wait-for-it.sh -t 0 -h ${MYSQL_HOST:-misp_db} -p 3306 -- /run.sh"
 
   db:
