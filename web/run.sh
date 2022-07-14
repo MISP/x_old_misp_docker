@@ -114,6 +114,9 @@ if [ -r /.firstboot.tmp ]; then
         sed -i "s/8889/3306/" database.php
         sed -i "s/db\s*password/$MYSQL_PASSWORD/" database.php
 
+        # Use DB for MISP Session Handler
+        sed -z -i "s;'Session', array(\n\t'timeout'        => 60,    // Session timeout, default is 1 hour\n\t'cookie_timeout' => 10080 ,  // Cookie timeout, default is 1 week\n\t'defaults'       => 'php',;'Session', array(\n\t'timeout'        => 60,    // Session timeout, default is 1 hour\n\t'cookie_timeout' => 10080,  // Cookie timeout, default is 1 week\n\t'defaults'       => 'database',;" core.php
+
         # Fix the base url
         if [ -z "$MISP_BASEURL" ]; then
                 echo "No base URL defined, don't forget to define it manually!"
