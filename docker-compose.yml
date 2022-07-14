@@ -28,11 +28,12 @@ services:
       - POSTFIX_USERNAME=${POSTFIX_USERNAME}
       - POSTFIX_PASSWORD=${POSTFIX_PASSWORD}
       - TIMEZONE=${TIMEZONE}
-    entrypoint: "wait-for-it.sh -t 0 -h db -p 3306 -- /run.sh"
+    entrypoint: "wait-for-it.sh -t 0 -h ${MYSQL_HOST} -p 3306 -- /run.sh"
 
   db:
     container_name: misp_db
     image: mysql/mysql-server:5.7
+    hostname: ${MYSQL_HOST}
     restart: unless-stopped
     volumes:
       - ${DATA_DIR}/db:/var/lib/mysql

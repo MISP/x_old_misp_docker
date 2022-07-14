@@ -120,6 +120,7 @@ if [ -r /.firstboot.tmp ]; then
         else
                 echo "Fixing the MISP base URL ($MISP_BASEURL) ..."
                 /var/www/MISP/app/Console/cake Admin setSetting "MISP.baseurl" "$MISP_BASEURL"
+                sed -i "s@'rest_client_baseurl'[\t ]*=>[\t ]*'.*',@'rest_client_baseurl' => '$MISP_BASEURL',@g" /var/www/MISP/app/Config/config.php
         fi
 		
 		#Redis should not run as a daemon
