@@ -35,6 +35,9 @@ USER root
 
 RUN pip3 list -o | cut -f1 -d' ' | tr " " "\n" | awk '{if(NR>=3)print}' | cut -d' ' -f1 | xargs -n1 pip3 install -U ; exit 0 #Hack error code
 
+# Re-install special MISP version of STIX2 that mispmodules likely overwrote
+RUN . /var/www/MISP/venv/bin/activate && pip3 install -I /var/www/MISP/app/files/scripts/cti-python-stix2 && deactivate
+
 
 # Supervisord Setup
 RUN ( \
