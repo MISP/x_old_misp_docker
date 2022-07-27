@@ -59,11 +59,13 @@ RUN ( \
     echo 'command=/bin/bash /var/www/MISP/app/Console/worker/start.sh'; \
     echo 'startsecs = 0'; \
     echo 'autorestart = false'; \
+    echo 'user=www-data'; \
     echo ''; \
     echo '[program:misp-modules]'; \
     echo 'command=/bin/bash -c "/var/www/MISP/venv/bin/misp-modules -l 127.0.0.1 -s"'; \
     echo 'startsecs = 0'; \
     echo 'autorestart = false'; \
+    echo 'user=www-data'; \
     ) >> /etc/supervisor/conf.d/supervisord.conf
 
 # Add run script
