@@ -12,7 +12,6 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./web/wait-for-it.sh:/usr/local/bin/wait-for-it.sh:ro
       - /dev/urandom:/dev/random
       - ${DATA_DIR:-./data}/web:/var/www/MISP
     environment:

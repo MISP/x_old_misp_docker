@@ -77,6 +77,9 @@ RUN ( \
 # Add run script
 # Trigger to perform first boot operations
 ADD run.sh /run.sh
+# Ensure that wait for it is included in the path and executable
+ADD wait-for-it.sh /usr/local/bin/wait-for-it.sh
+RUN chmod +x /usr/local/bin/wait-for-it.sh
 RUN mv /etc/apache2/sites-available/misp-ssl.conf /etc/apache2/sites-available/misp-ssl.conf.bak
 ADD misp-ssl.conf /etc/apache2/sites-available/misp-ssl.conf
 RUN chmod 0755 /run.sh && touch /.firstboot.tmp
