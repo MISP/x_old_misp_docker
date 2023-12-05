@@ -1,3 +1,18 @@
+# Hello potential user/contributor
+
+This project is outside of the main MISP umbrella and does not have much
+community traction/use. As such it has not seen any love in a long time. 
+This also means using the code in this repository is not recommended 
+for users new to MISP.
+
+Alternatives to this repository may be
+* [/MISP/misp-docker](https://github.com/MISP/misp-docker)
+* [/MISP/docker-misp](https://github.com/MISP/docker-misp)
+* [Install scripts](https://github.com/MISP/MISP/tree/2.4/INSTALL)
+
+Be aware that general issues in this repository will most likely not be 
+acted upon - however, pull requests are mostly welcome.
+
 MISP Docker
 ===========
 
